@@ -1,8 +1,12 @@
 import clr
+clr.AddReference('System.Drawing')
 clr.AddReference('System.Windows.Forms')
 
-from System.Windows.Forms import (Application, DockStyle, Form, MenuStrip, TabControl, 
-    TabAlignment, TabPage, ToolStripMenuItem
+from System.Drawing import Bitmap
+from System.Windows.Forms import (
+    Application, DockStyle, Form, MenuStrip, 
+    OpenFileDialog, PictureBox, TabControl, TabAlignment, 
+    TabPage, ToolStripMenuItem    
 )
 
 
@@ -40,7 +44,8 @@ class MainForm(Form):
         
         openMenuItem = ToolStripMenuItem()
         openMenuItem.Name = 'Open'
-        openMenuItem.Text = '&Open'
+        openMenuItem.Text = '&Open...'
+        openMenuItem.Click += self.onOpen
         fileMenu.DropDownItems.Add(openMenuItem)
         
         menuStrip.Items.Add(fileMenu)
@@ -48,8 +53,16 @@ class MainForm(Form):
         self.Controls.Add(menuStrip)
         
 
-    def openImage(self):
-        pass
+    def onOpen(self, _, __):
+        openFileDialog = OpenFileDialog()
+        openFileDialog.ShowDialog()
+        tabPage = self.tabControl.TabPages[0]
+        tabPage.Text = openFileDialog.FileName
+        pictureBox = PictureBox()
+        pictureBox.Image = Bitmap(openFileDialog.FileName)
+        tabPage.Controls.Clear()
+        tabPage.Controls.Add(pictureBox)
+        
 
 Application.EnableVisualStyles()
 Application.Run(MainForm())
