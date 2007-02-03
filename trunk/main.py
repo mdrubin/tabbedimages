@@ -10,6 +10,8 @@ from System.Windows.Forms import (
 )
 
 
+NO_IMAGE = 'No Image'
+
 class MainForm(Form):
     
     def __init__(self):
@@ -27,7 +29,7 @@ class MainForm(Form):
         self.tabControl.Alignment = TabAlignment.Bottom
         
         page = TabPage()
-        page.Text = 'No Image'
+        page.Text = NO_IMAGE
         self.tabControl.TabPages.Add(page)
         
         self.Controls.Add(self.tabControl)
@@ -57,6 +59,10 @@ class MainForm(Form):
         openFileDialog = OpenFileDialog()
         openFileDialog.ShowDialog()
         tabPage = self.tabControl.TabPages[0]
+        if tabPage.Text != NO_IMAGE:
+            tabPage = TabPage()
+            self.tabControl.TabPages.Add(tabPage)
+            self.tabControl.SelectedTab = tabPage
         tabPage.Text = openFileDialog.FileName
         pictureBox = PictureBox()
         pictureBox.Image = Bitmap(openFileDialog.FileName)
