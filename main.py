@@ -5,7 +5,8 @@ clr.AddReference('System.Windows.Forms')
 from System.Drawing import Bitmap
 from System.Windows.Forms import (
     Application, DockStyle, Form, MenuStrip, 
-    OpenFileDialog, PictureBox, TabControl, TabAlignment, 
+    OpenFileDialog, PictureBox, PictureBoxSizeMode, 
+    TabControl, TabAlignment, 
     TabPage, ToolStripMenuItem    
 )
 from System.IO import Path
@@ -66,7 +67,11 @@ class MainForm(Form):
             self.tabControl.SelectedTab = tabPage
         tabPage.Text = Path.GetFileName(openFileDialog.FileName)
         pictureBox = PictureBox()
-        pictureBox.Image = Bitmap(openFileDialog.FileName)
+
+        image = Bitmap(openFileDialog.FileName)
+        pictureBox.Image = image
+        pictureBox.ClientSize = image.Size
+               
         tabPage.Controls.Clear()
         tabPage.Controls.Add(pictureBox)
         
