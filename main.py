@@ -8,6 +8,7 @@ from System.Windows.Forms import (
     OpenFileDialog, PictureBox, TabControl, TabAlignment, 
     TabPage, ToolStripMenuItem    
 )
+from System.IO import Path
 
 
 NO_IMAGE = 'No Image'
@@ -63,7 +64,7 @@ class MainForm(Form):
             tabPage = TabPage()
             self.tabControl.TabPages.Add(tabPage)
             self.tabControl.SelectedTab = tabPage
-        tabPage.Text = openFileDialog.FileName
+        tabPage.Text = Path.GetFileName(openFileDialog.FileName)
         pictureBox = PictureBox()
         pictureBox.Image = Bitmap(openFileDialog.FileName)
         tabPage.Controls.Clear()
