@@ -1,0 +1,258 @@
+============================
+ IronPython & Windows Forms
+============================
+-------------------
+ A PyCon 2007 Talk
+-------------------
+
+.. include:: <s5defs.txt>
+.. footer:: Michael Foord & Andrzej Krzywda 2007
+
+
+.. contents:: IronPython & Winforms
+   :class: handout
+
+
+
+Introduction
+============
+
+.. class:: incremental
+
+* Michael Foord (Fuzzyman)
+
+.. class:: handout
+
+    I have been programming with Python for nearly four years. I've written several `articles <http://www.voidspace.org.uk/python/articles.shtml>`_ on Python, and a couple of them are even worth reading. {sm;:-)}
+    
+    I am also the author of the following Python projects:
+
+    * `rest2web <http://www.voidspace.org.uk/python/rest2web/>`_
+    * `ConfigObj <http://www.voidspace.org.uk/python/configobj.html>`_
+    * `Movable Python <http://www.voidspace.org.uk/python/rest2web/>`_
+    
+    I've written a tutorial on `IronPython and Windows Forms <http://www.voidspace.org.uk/ironpython/>`_. My blog is the `Voidspace Techie Blog <http://www.voidspace.org.uk/python/weblog/index.shtml>`_.
+    
+    I'm particularly grateful to IronPython. Because of it I'm now able to earn a living programming with Python, for Resolver Systems.
+
+
+.. class:: incremental
+
+* Andrzej Krzywda
+
+
+.. class:: handout
+
+    I'm an agile software developer. I appreciate the beauty and elegance of Python and Ruby, two great dynamic languages. I started programming in Ruby (on Rails) in 2004. Working with IronPython, for Resolver, was my first practical experience of working with Python. Before switching to Ruby/Python I was a Java developer.
+
+.. class:: incremental
+
+* Resolver Systems Ltd (London)
+
+
+.. class:: handout
+
+    `Resolver Systems <http://www.resolversystems.com>`_ is a small company (6 developers) based in London. Resolver Systems was created to develop a new business application. This has *just* gone out for a private beta test with our first customers and we should be going public with the details soon.
+    
+    Resolver the company started in late 2005. Andrzej joined Resolver in March 2006, Michael joined in April 2006.
+
+.. class:: incremental
+
+* Resolver the Application
+
+
+.. class:: handout
+
+    Resolver is a desktop application for businesses. .NET was initially chosen as the development platform, but a scripting language was needed as an integral part of the application. After discovering and trying IronPython (whilst it was still Beta) the two developers, as they then were, decided to write the whole application with IronPython.
+    
+    The Resolver codebase currently stands at over twenty thousand lines of production code and around seventy thousand lines of test code. About 1% of the production code is in C# and the rest IronPython.
+    
+    Resolver integrates Python in a very interesting way...
+
+    
+
+
+What is IronPython?
+===================
+
+
+.. class:: incremental
+
+* IronPython is Python 2.4 (Some 2.5 features already there)
+
+.. class:: handout
+
+    Project started by Jim Hugunin who now heads a Microsoft team running the development.
+
+    IronPython is a very faithful implementation of Python 2.4. All core language features there. Not all the standard library works. Some C extension modules missing (although wrappers around .NET functionality have been created, for example for pyexpat, socket etc). Some features like stack frames, byetcode, sys._settrace are missing or different. A lot of third party libraries have problems as a result. The Microsoft team have put a lot of effort into fixing these problems where possible and the IronPython community (especially Seo and his Fepy project) have also provided a lot of patches to the standard library, ported projects across or created wrappers. With detective work most problems can be fixed, but you can't expect large frameworks or libraries to work without modification.
+
+
+.. class:: incremental
+
+* Written in C# for the .NET framework
+
+.. class:: incremental
+
+* Also runs on Mono
+
+
+
+IronPython and .NET
+===================
+
+
+.. class:: incremental
+
+* IronPython is a Python compiler
+
+.. class:: handout
+
+    The IronPython engine is actually an IronPython compiler. It compiles Python code into assemblies in memory. Although these assemblies can be saved to disk (making binary only distributions possible), because of the dynamic nature of Python they retain a dependency on the IronPython dlls.
+
+.. class:: incremental
+
+* So you use native .NET types
+
+.. class:: handout
+
+    IronPython has seamless integration with the .NET framework. Types can be passed back and forth from native .NET code with no conversion, making it very simple to use .NET classes from IronPython. This means that extending IronPython with C# (including accessing unmanaged code and the win32 APIs) is *much* easier than extending CPython with C.
+
+
+Why Use IronPython?
+===================
+
+.. class:: handout
+
+    If you don't need .NET you don't want IronPython. (Probably!) {sm;:-)} IronPython is at its best for .NET programmers.
+
+    According to the `Computer Language Shootout <http://shootout.alioth.debian.org>`_ IronPython is generally a bit slower than CPython.
+
+    For .NET programmers, Python is nicer than C#. It is also a ready made scripting language for embedding in applications.
+
+* `Use multi-core processors`
+* `Built-in security model with AppDomains`
+* `Native Windows GUI: Windows Forms`
+* `Access to third-party .NET components`
+
+.. class:: handout
+
+    Especially sophisticated GUI components, but don't forget that the .NET framework itself is pretty huge.
+    
+* `IronPython is much easier to extend with C# than CPython is with C`
+* `IronPython (on .NET) may be an easier corporate sell`
+
+
+Drawback: for garbage collection reasons IronPython re-uses classes, so you *can't* create classes in IronPython and then instantiate / use them from C#. You can create wrapper classes that call into the IronPython engine. A bit ugly but it works fine.
+
+
+Using IronPython
+================
+
+Explanation of .NET assemblies.
+
+Introduction to clr module.
+
+Adding standard library to the path (setting IRONPYTHONPATH).
+
+IronPython interactive interpreter. (Setting tab completion at the command line)
+
+Example with Windows Forms. (Illustrate auto-complete)
+
+
+Form Class
+http://msdn2.microsoft.com/en-us/library/system.windows.forms.form.aspx
+
+Form Members
+http://msdn2.microsoft.com/en-us/library/system.windows.forms.form_members.aspx
+
+Public Constructors
+http://msdn2.microsoft.com/en-us/library/system.windows.forms.form.form.aspx
+
+C# Example
+public Form ()
+
+Constructor takes no arguments.
+
+Therefore in IronPython:
+
+    import clr
+    clr.AddReference('System.Windows.Forms')
+    from System.Windows.Forms import Application, Button, Form
+
+    form = Form()
+    form.Text = 'Hello World'
+
+Text property gets or sets a string. We can set it directly from IronPython with an IronPython string.
+
+    button = Button(Text='Click Me')
+
+Proeprties can also be setup in the constructor using keyword arguments (which can't be done from C#).
+
+    form.Controls.Add(button)
+    form.Show()
+
+Add the button to the forms controls (a C# container).
+Show the form - form untresponsive because the application loop is not yet started.
+
+    from System.Drawing import Point
+    x = y = 0
+    def click(sender, event):
+       global x, y
+       print 'clicked'
+       x += 15
+       y += 15
+       button.Location = Point(x, y)
+    
+    button.Click += click
+
+Define an event handler function (a delegate in C#) and add it to the event using 'add in place'. Note that we can unregister it using '-='.
+
+Application class
+http://msdn2.microsoft.com/en-us/library/system.windows.forms.application.aspx
+
+    Application.Run(form)
+    
+Start the application loop.
+
+Interactive demo over.
+
+Demo Application
+================
+
+Multi-tabbed image viewer.
+
+DockStyle
+File dialog.
+System message box.
+Context menu and ordinary menu.
+Clipboard.
+Tab pages
+
+Bitmap
+
+Screenshots from Mono
+
+Structure
+
+View-Controllers (minimal model)
+Command pattern
+
+
+Further
+=======
+
+Creating dialogs in Visual Studio Express Designer (C#), subclassing in IronPython
+Creating C# classes and using from IronPython
+Custom executable (most basic form of embedding)
+
+
+Questions
+=========
+
+Any questions?
+
+
+Presentation
+============
+
+.. contents:: IronPython & Winforms
