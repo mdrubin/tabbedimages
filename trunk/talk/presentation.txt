@@ -34,6 +34,8 @@ Introduction
     I've written a tutorial on `IronPython and Windows Forms <http://www.voidspace.org.uk/ironpython/>`_. My blog is the `Voidspace Techie Blog <http://www.voidspace.org.uk/python/weblog/index.shtml>`_.
     
     I'm particularly grateful to IronPython. Because of it I'm now able to earn a living programming with Python, for Resolver Systems.
+    
+    I'm also writing a book, *IronPython in Action* for Manning publications. Expect to see it out early autumn time.
 
 
 .. class:: incremental
@@ -84,17 +86,29 @@ What is IronPython?
 
     Project started by Jim Hugunin who now heads a Microsoft team running the development.
 
-    IronPython is a very faithful implementation of Python 2.4. All core language features there. Not all the standard library works. Some C extension modules missing (although wrappers around .NET functionality have been created, for example for pyexpat, socket etc). Some features like stack frames, byetcode, sys._settrace are missing or different. A lot of third party libraries have problems as a result. The Microsoft team have put a lot of effort into fixing these problems where possible and the IronPython community (especially Seo and his Fepy project) have also provided a lot of patches to the standard library, ported projects across or created wrappers. With detective work most problems can be fixed, but you can't expect large frameworks or libraries to work without modification.
+    IronPython is a very faithful implementation of Python 2.4. All the core language features are there. 
+    
+    IronPython is *different* though. Python stack frames and bytecode are obviously not present, and so parts of the standard library that rely on these 'implementation details' don't work. Some examples: ``sys._settrace`` is missing (uses stack frames). Also ``inspect.get_argspec`` examines bytecode to fetch ``varargs`` and ``varkeywargs`` so it is broken, meaning that ``help`` doesn't work. 
+    
+    None of the C libraries work (obviously). Wrappers around .NET functionality have been created, for example for pyexpat, socket etc.
+    
+    A lot of third party libraries have problems as a result. The Microsoft team have put a lot of effort into fixing these problems where possible and the IronPython community (especially Seo and his Fepy project) have also provided a lot of patches to the standard library, ported projects across or created wrappers. With detective work most problems can be fixed, but you can't expect large frameworks or libraries to work without modification.
 
 
 .. class:: incremental
 
 * Written in C# for the .NET framework
 
+
 .. class:: incremental
 
 * Also runs on Mono
 
+.. class:: handout
+
+    In fact, the community edition (`Fepy <http://fepy.sourceforge.net>`_) is now *included* in Mono.
+    
+    Mono has partial support for Windows Forms. I think most/all of .NET 1.1 is there and some 2.0.
 
 
 IronPython and .NET
@@ -109,6 +123,7 @@ IronPython and .NET
 
     The IronPython engine is actually an IronPython compiler. It compiles Python code into assemblies in memory. Although these assemblies can be saved to disk (making binary only distributions possible), because of the dynamic nature of Python they retain a dependency on the IronPython dlls.
 
+
 .. class:: incremental
 
 * So you use native .NET types
@@ -116,6 +131,9 @@ IronPython and .NET
 .. class:: handout
 
     IronPython has seamless integration with the .NET framework. Types can be passed back and forth from native .NET code with no conversion, making it very simple to use .NET classes from IronPython. This means that extending IronPython with C# (including accessing unmanaged code and the win32 APIs) is *much* easier than extending CPython with C.
+    
+    The exception is that attributes are missing and you can't consume IronPython assemblies from C#.  This is because (my understanding anyway) .NET doesn't garbage collect classes (rarely generated at runtime), so IronPython re-uses a single class under the hood. So you can't yet create classes that can be used from C#, which is part of the reason why you can't use .NET attributes.
+
 
 
 Why Use IronPython?
@@ -129,38 +147,140 @@ Why Use IronPython?
 
     For .NET programmers, Python is nicer than C#. It is also a ready made scripting language for embedding in applications.
 
-* `Use multi-core processors`
-* `Built-in security model with AppDomains`
-* `Native Windows GUI: Windows Forms`
-* `Access to third-party .NET components`
+* Use multi-core processors
+
+.. class:: incremental
+
+* Built-in security model with AppDomains
+
+.. class:: incremental
+
+* Native Windows GUI: Windows Forms
+
+.. class:: incremental
+
+* Access to third-party .NET components
+
+.. class:: incremental
+
+* Much easier to extend with C# than CPython and C
+
+.. class:: incremental
+
+* IronPython (on .NET) may be an easier corporate sell
+
 
 .. class:: handout
 
-    Especially sophisticated GUI components, but don't forget that the .NET framework itself is pretty huge.
+    Third party components includes a huge range of sophisticated GUI components. Due to the Windows culture you usually have to pay for them! However we use a couple of big components in Resolver, and at least one of them (I'm pretty sure) wouldn't have an equivalent for any CPython GUI library.
+
+
+Setting Up IronPython
+=====================
+
+
+.. class:: incremental
+
+1) Install .NET 2.0 redistributable (`Horrible Microsoft URL <http://www.microsoft.com/downloads/details.aspx?familyid=0856eacb-4362-4b0d-8edd-aab15c5e04f5&displaylang=en>`_)
+
+.. class:: handout
+
+    Microsoft seem to be pushing out the .NET framework through Windows Update now (possibly as an optional update?). So many people are finding they don't need to do this. Good news for distributing IronPython applications.
+
+.. class:: incremental
+
+2) Download IronPython {sm;:-o} (http://www.codeplex.com/IronPython)
+
+.. class:: incremental
+
+3) Setup the environment variable ``IRONPYTHONPATH`` pointing to the Python 2.4 standard library.
+
+.. class:: handout
+
+    This means you need Python 2.4 installed. The default location of the Python standard library will be ``C:\Python24\Lib``. You can just copy the Python standard library to another folder and add that location to ``IRONPYTHONPATH`` (or manually to ``sys.path``) and you can distribute the standard library with your applications.
+
+
+Using .NET: Assemblies
+======================
+
+
+.. class:: incremental
+
+* An assembly is a .NET library (usually a ``dll`` could be an ``exe``)
+
+.. class:: handout
+
+    Difference between assemblies and namespaces XXX.
+
+.. class:: incremental
+
+* The Windows Forms assembly is ``System.Windows.Forms``
+
+.. class:: incremental
+
+* In order to import from them you need to add a reference to the assembly
+
+.. class:: incremental
+
+* To do that we use the ``clr`` module, an IronPython built-in
+
+
+The Interactive Interpreter
+===========================
+
+.. class:: incremental
+
+The IronPython interactive interpreter is ``ipy.exe``, which is also used to run scripts.
+
+.. class:: handout
+
+    This is the equivalent of ``python.exe``. 
+
+    There is also ``ipyw.exe`` which is the equivalent of ``pythonw.exe`` and runs scripts without a console box.
     
-* `IronPython is much easier to extend with C# than CPython is with C`
-* `IronPython (on .NET) may be an easier corporate sell`
+    To switch on tab completion (very useful) and colour highlighting, run ``ipy.exe`` with the arguments:
+
+        ``ipy -D -X:TabCompletion -X:ColorfulConsole``
+
+.. image:: images/ip_console.jpg
+    :width: 669
+    :height: 302
+    :align: center
+    :alt: The IronPython Console
+    :class: incremental
+    
+
+A Windows Forms Application
+===========================
+
+.. class:: incremental
+
+* The most basic Windows Forms application uses the `Application Class <http://msdn2.microsoft.com/en-us/library/system.windows.forms.application.aspx>`_ and the `Form Class <http://msdn2.microsoft.com/en-us/library/system.windows.forms.form.aspx>`_
+
+.. class:: incremental
+
+* Application is responsible for starting the message loop.
+
+.. class:: incremental
+
+* You call the static method ``Run`` on the Application class.
+
+.. class:: incremental
+
+* This has three overloads. The one we're interested in takes a ``Form`` instance as the argument.
 
 
-Drawback: for garbage collection reasons IronPython re-uses classes, so you *can't* create classes in IronPython and then instantiate / use them from C#. You can create wrapper classes that call into the IronPython engine. A bit ugly but it works fine.
+Reading MSDN Docs
+=================
 
+.. class:: handout
 
-Using IronPython
-================
+    This example is fairly trivial, but once you can do this you can use any of the classes from the .NET framework from IronPython. A useful skill.
 
-Explanation of .NET assemblies.
-
-Introduction to clr module.
-
-Adding standard library to the path (setting IRONPYTHONPATH).
-
-IronPython interactive interpreter. (Setting tab completion at the command line)
-
-Example with Windows Forms. (Illustrate auto-complete)
-
+* First browse to the 
 
 Form Class
-http://msdn2.microsoft.com/en-us/library/system.windows.forms.form.aspx
+
 
 Form Members
 http://msdn2.microsoft.com/en-us/library/system.windows.forms.form_members.aspx
