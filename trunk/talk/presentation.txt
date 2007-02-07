@@ -10,7 +10,7 @@
 
 
 .. contents:: IronPython & Winforms
-   :class: handout 
+   :class: handout
 
 
 
@@ -311,13 +311,29 @@ Reading MSDN Docs
 The Basic Example
 =================
 
-Therefore in IronPython: ::
+.. class:: incremental
 
+Therefore, the *most trivial Windows Forms application possible* in IronPython:
+
+.. class:: incremental
+
+.. raw:: html
+    
+    {+coloring}
     import clr
     clr.AddReference('System.Windows.Forms')
-    from System.Windows.Forms import Application, Button, Form
+    from System.Windows.Forms import Application, Form
 
     form = Form()
+    Application.Run(form)
+    {-coloring}
+
+.. class:: incremental
+
+{sm;:-)}
+
+Next
+====
     form.Text = 'Hello World'
 
 Text property gets or sets a string. We can set it directly from IronPython with an IronPython string.
