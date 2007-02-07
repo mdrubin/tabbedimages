@@ -8,10 +8,8 @@
 .. include:: <s5defs.txt>
 .. footer:: Michael Foord & Andrzej Krzywda 2007
 
-
 .. contents:: IronPython & Winforms
    :class: handout
-
 
 
 Introduction
@@ -37,11 +35,9 @@ Introduction
     
     I'm also writing a book, *IronPython in Action* for Manning publications. Expect to see it out early autumn time.
 
-
 .. class:: incremental
 
 * Andrzej Krzywda
-
 
 .. class:: handout
 
@@ -50,7 +46,6 @@ Introduction
 .. class:: incremental
 
 * Resolver Systems Ltd (London)
-
 
 .. class:: handout
 
@@ -62,7 +57,6 @@ Introduction
 
 * Resolver the Application
 
-
 .. class:: handout
 
     Resolver is a desktop application for businesses. .NET was initially chosen as the development platform, but a scripting language was needed as an integral part of the application. After discovering and trying IronPython (whilst it was still Beta) the two developers, as they then were, decided to write the whole application with IronPython.
@@ -72,11 +66,8 @@ Introduction
     Resolver integrates Python in a very interesting way...
 
     
-
-
 What is IronPython?
 ===================
-
 
 .. class:: incremental
 
@@ -93,7 +84,6 @@ What is IronPython?
     None of the C libraries work (obviously). Wrappers around .NET functionality have been created, for example for pyexpat, socket etc.
     
     A lot of third party libraries have problems as a result. The Microsoft team have put a lot of effort into fixing these problems where possible and the IronPython community (especially Seo and his Fepy project) have also provided a lot of patches to the standard library, ported projects across or created wrappers. With detective work most problems can be fixed, but you can't expect large frameworks or libraries to work without modification.
-
 
 .. class:: incremental
 
@@ -114,7 +104,6 @@ What is IronPython?
 IronPython and .NET
 ===================
 
-
 .. class:: incremental
 
 * IronPython is a Python compiler
@@ -133,7 +122,6 @@ IronPython and .NET
     IronPython has seamless integration with the .NET framework. Types can be passed back and forth from native .NET code with no conversion, making it very simple to use .NET classes from IronPython. This means that extending IronPython with C# (including accessing unmanaged code and the win32 APIs) is *much* easier than extending CPython with C.
     
     The exception is that attributes are missing and you can't consume IronPython assemblies from C#.  This is because (my understanding anyway) .NET doesn't garbage collect classes (rarely generated at runtime), so IronPython re-uses a single class under the hood. So you can't yet create classes that can be used from C#, which is part of the reason why you can't use .NET attributes.
-
 
 
 Why Use IronPython?
@@ -177,7 +165,6 @@ Why Use IronPython?
 
 Setting Up IronPython
 =====================
-
 
 .. class:: incremental
 
@@ -334,9 +321,12 @@ Therefore, the *most trivial Windows Forms application possible* in IronPython:
 
 Next
 ====
+
+::
+
     form.Text = 'Hello World'
 
-Text property gets or sets a string. We can set it directly from IronPython with an IronPython string.
+Text property gets or sets a string. We can set it directly from IronPython with an IronPython string. ::
 
     button = Button(Text='Click Me')
 
@@ -361,14 +351,6 @@ Show the form - form untresponsive because the application loop is not yet start
 
 Define an event handler function (a delegate in C#) and add it to the event using 'add in place'. Note that we can unregister it using '-='.
 
-Application class
-http://msdn2.microsoft.com/en-us/library/system.windows.forms.application.aspx ::
-
-    Application.Run(form)
-    
-Start the application loop.
-
-Interactive demo over.
 
 Demo Application
 ================
