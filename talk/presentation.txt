@@ -328,9 +328,9 @@ Therefore, the *most trivial Windows Forms application possible* in IronPython:
     Application.Run(form)
     {-coloring}
 
-.. class:: incremental
+.. class:: handout
 
-{sm;:-)}
+    This starts the message loop and makes the form visible, with all the default event handlers in place. The only one with any relevance for us is the one that handles the *Form Closing* event. This calls ``Application.Exit()``, disposes of the form and shuts down the message loop.
 
 Next
 ====
