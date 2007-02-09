@@ -387,10 +387,17 @@ Adding Controls
 
     And they are enumerable.
     
+    Instead of using ``Controls.Add`` we *could* have done ``button.Parent = form``, which would have added the button to the form's controls collection for us.
+    
 .. class:: incremental
 
 * The order you add controls is relevant: the Z-Order
 
+.. class:: handout
+
+    XXXX notes about Z-Order
+    
+    XXXX or a bullet point about properties inherited from 'Control' ???
 
    
 Event Handlers
@@ -440,8 +447,24 @@ Event Handlers
     :class: handout
 
 
-Demo Application
-================
+The Multi-Tabbed Image Viewer
+=============================
+
+.. class:: incremental
+
+* This is our sample Windows Forms Application
+
+.. class:: incremental
+
+* Available for download from `code.google.com/p/tabbedimages/ <http://code.google.com/p/tabbedimages/>`_
+
+.. class:: incremental
+
+* Illustrates more advanced aspects of Windows Forms
+
+
+Layout: DockStyle
+=================
 
 Multi-tabbed image viewer.
 
