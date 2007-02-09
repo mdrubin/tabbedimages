@@ -350,11 +350,13 @@ Setting Attributes
 
 .. class:: incremental
 
-* Requires a .NET string, but IronPython uses native types
+* Requires a .NET string, but IronPython uses native types (hoorah)
 
 .. class:: handout
 
-    XXXX Demonstrate looking up this property in the docs ?
+    So no conversion is necessary.
+    
+    XXXX Demonstrate looking up the Text property in the docs ?
 
 
 Adding Controls
@@ -375,7 +377,7 @@ Adding Controls
 
 .. class:: handout
 
-    Note the alternative way of setting the ``Text``, through a keyword argument in the constructor. This canl't be done with C# which doesn't have keyword arguments.
+    Note the alternative way of setting the ``Text``, through a keyword argument in the constructor. This can't be done with C# which doesn't have keyword arguments.
 
 .. class:: incremental
 
@@ -429,6 +431,7 @@ Event Handlers
     Application.Run(form)
     {-coloring}
 
+.. class:: handout
 
 Demo Application
 ================
