@@ -264,6 +264,10 @@ A Windows Forms Application
 
 * This has three overloads. The one we're interested in takes a ``Form`` instance as the argument.
 
+.. class:: handout
+
+    Overloads based on type signature.  There are some advantages of statically typed languages!
+
 
 Reading MSDN Docs
 =================
