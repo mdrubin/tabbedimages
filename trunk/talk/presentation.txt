@@ -323,37 +323,111 @@ Therefore, the *most trivial Windows Forms application possible* in IronPython:
 
     This starts the message loop and makes the form visible, with all the default event handlers in place. The only one with any relevance for us is the one that handles the *Form Closing* event. This calls ``Application.Exit()``, disposes of the form and shuts down the message loop.
 
-Next
-====
 
-::
+Setting Attributes
+==================
 
+.. class:: incremental small
+
+.. raw:: html
+    
+    {+coloring}
+    import clr
+    clr.AddReference('System.Windows.Forms')
+    from System.Windows.Forms import Application, Button, Form
+
+    form = Form()
     form.Text = 'Hello World'
+    {-coloring}
 
-Text property gets or sets a string. We can set it directly from IronPython with an IronPython string. ::
+.. class:: incremental
 
+* The ``Text`` property gets or sets a string
+
+.. class:: incremental
+
+* On a form this is the title
+
+.. class:: incremental
+
+* Requires a .NET string, but IronPython uses native types
+
+.. class:: handout
+
+    XXXX Demonstrate looking up this property in the docs ?
+
+
+Adding Controls
+===============
+
+.. class:: incremental small
+
+.. raw:: html
+    
+    {+coloring}
     button = Button(Text='Click Me')
-
-Proeprties can also be setup in the constructor using keyword arguments (which can't be done from C#).
-
     form.Controls.Add(button)
-    form.Show()
+    {-coloring}
 
-Add the button to the forms controls (a C# container).
-Show the form - form untresponsive because the application loop is not yet started. ::
+.. class:: incremental
 
+* Add a button to the parent control
+
+.. class:: handout
+
+    Note the alternative way of setting the ``Text``, through a keyword argument in the constructor. This canl't be done with C# which doesn't have keyword arguments.
+
+.. class:: incremental
+
+* ``form.Controls`` is a collection class, with various methods.
+
+.. class:: handout
+
+    And they are enumerable.
+    
+.. class:: incremental
+
+* The order you add controls is relevant: the Z-Order
+
+
+   
+Event Handlers
+==============
+
+.. class:: incremental small
+
+* Create an event handler function and add it to an event
+
+.. class:: incremental small
+
+.. raw:: html
+    
+    {+coloring}
+    clr.AddReference('System.Drawing')
     from System.Drawing import Point
     x = y = 0
-    def click(sender, event):
+    def onClick(sender, event):
        global x, y
-       print 'clicked'
        x += 15
        y += 15
        button.Location = Point(x, y)
     
-    button.Click += click
+    button.Click += onClick
+    {-coloring}
 
-Define an event handler function (a delegate in C#) and add it to the event using 'add in place'. Note that we can unregister it using '-='.
+.. class:: handout
+
+    ``onClick`` is an event handler function (a delegate in C#). We and add it to the event using 'add in place'. Note that we can remove it using '-='. It is IronPython 'under the hood' which converts our function into a delegate.
+    
+    The arguments that Windows Forms event handlers receive are ``sender`` and ``event``. The sender is the control on which the event happened, the event will be an instance of one of the ``EventArgs`` classes, and may contain useful information about the event (state of the mouse buttons, location of the mouse etc). You may also be able to cancel the event.
+
+.. class:: incremental small
+
+.. raw:: html
+    
+    {+coloring}
+    Application.Run(form)
+    {-coloring}
 
 
 Demo Application
