@@ -431,7 +431,14 @@ Event Handlers
     Application.Run(form)
     {-coloring}
 
-.. class:: handout
+
+.. image:: images/simple_form.jpg
+    :width: 300
+    :height: 300
+    :align: center
+    :alt: Our Example Form with Button
+    :class: handout
+
 
 Demo Application
 ================
