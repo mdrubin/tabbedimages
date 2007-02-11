@@ -33,23 +33,30 @@ class MainForm(Form):
         self.Controls.Add(self.tabControl)
         
     
+    def createMenuItem(self, name, text, clickHandler=None):
+        menuItem = ToolStripMenuItem(
+            Name = name,
+            Text = text
+        )
+        if clickHandler:
+            print clickHandler
+            menuItem.Click += clickHandler        
+        return menuItem
+    
+    
     def initMenu(self):
         menuStrip = MenuStrip(
             Name = "Main MenuStrip",
             Dock = DockStyle.Top
         )        
-        fileMenu = ToolStripMenuItem(
-            Name = 'File Menu',
-            Text = '&File'
-        )        
-        openMenuItem = ToolStripMenuItem(
-            Name = 'Open',
-            Text = '&Open...'
-        )
-        openMenuItem.Click += self.onOpen
-        
+        fileMenu     = self.createMenuItem('File Menu', '&File')        
+        openMenuItem = self.createMenuItem('Open', '&Open...', self.onOpen)
+        exitMenuItem = self.createMenuItem('Exit', 'E&xit', lambda *_: Application.Exit())
+                
         fileMenu.DropDownItems.Add(openMenuItem)        
+        fileMenu.DropDownItems.Add(exitMenuItem)
         menuStrip.Items.Add(fileMenu)
+        
         
         self.Controls.Add(menuStrip)
 
