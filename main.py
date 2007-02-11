@@ -62,33 +62,34 @@ class MainForm(Form):
     
     def onOpen(self, _, __):
         openFileDialog = OpenFileDialog(
-            Filter = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
+            Filter = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*",
+            Multiselect = True
         )
         if openFileDialog.ShowDialog() == DialogResult.Cancel:
             return
-        
-        fileName = openFileDialog.FileName
-        image = None
-        try:
-            image = Bitmap(fileName)
-        except ArgumentException:
-            MessageBox.Show(fileName + " doesnt't appear to be a valid image file", 
-                            "Invalid image format",
-                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            return
-        tabPage = self.tabControl.TabPages[0]
-        if tabPage.Text != NO_IMAGE:
-            tabPage = TabPage()
-            self.tabControl.TabPages.Add(tabPage)
-            self.tabControl.SelectedTab = tabPage
-        tabPage.Text = Path.GetFileName(fileName)
-        pictureBox = PictureBox(
-            Dock = DockStyle.Fill,
-            Image = image,                
-            SizeMode = PictureBoxSizeMode.StretchImage
-        )
-        tabPage.Controls.Clear()
-        tabPage.Controls.Add(pictureBox)
+        for fileName in openFileDialog.FileNames:
+
+            image = None
+            try:
+                image = Bitmap(fileName)
+            except ArgumentException:
+                MessageBox.Show(fileName + " doesnt't appear to be a valid image file", 
+                                "Invalid image format",
+                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            if image:
+                tabPage = self.tabControl.TabPages[0]
+                if tabPage.Text != NO_IMAGE:
+                    tabPage = TabPage()
+                    self.tabControl.TabPages.Add(tabPage)
+                    self.tabControl.SelectedTab = tabPage
+                tabPage.Text = Path.GetFileName(fileName)
+                pictureBox = PictureBox(
+                    Dock = DockStyle.Fill,
+                    Image = image,                
+                    SizeMode = PictureBoxSizeMode.StretchImage
+                )
+                tabPage.Controls.Clear()
+                tabPage.Controls.Add(pictureBox)
         
 
 Application.EnableVisualStyles()
