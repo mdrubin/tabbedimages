@@ -2,12 +2,14 @@ import clr
 clr.AddReference('System.Drawing')
 clr.AddReference('System.Windows.Forms')
 
+from System import ArgumentException
 from System.Drawing import Bitmap
 from System.Windows.Forms import (
-    Application, DockStyle, Form, MenuStrip, 
+    Application, DialogResult, DockStyle, Form, MenuStrip,
+    MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, PictureBox, PictureBoxSizeMode, 
     TabControl, TabAlignment, 
-    TabPage, ToolStripMenuItem    
+    TabPage, ToolBar, ToolStripMenuItem    
 )
 from System.IO import Path
 
@@ -38,37 +40,51 @@ class MainForm(Form):
         
     
     def initMenu(self):
-        menuStrip = MenuStrip()
-        menuStrip.Name = "Main MenuStrip"
-        menuStrip.Dock = DockStyle.Top
-        
-        fileMenu = ToolStripMenuItem()
-        fileMenu.Name = 'File Menu'
-        fileMenu.Text = '&File'
-        
-        openMenuItem = ToolStripMenuItem()
-        openMenuItem.Name = 'Open'
-        openMenuItem.Text = '&Open...'
+        menuStrip = MenuStrip(
+            Name = "Main MenuStrip",
+            Dock = DockStyle.Top
+        )        
+        fileMenu = ToolStripMenuItem(
+            Name = 'File Menu',
+            Text = '&File'
+        )        
+        openMenuItem = ToolStripMenuItem(
+            Name = 'Open',
+            Text = '&Open...'
+        )
         openMenuItem.Click += self.onOpen
-        fileMenu.DropDownItems.Add(openMenuItem)
         
+        fileMenu.DropDownItems.Add(openMenuItem)        
         menuStrip.Items.Add(fileMenu)
         
         self.Controls.Add(menuStrip)
-        
-
+            
+    
     def onOpen(self, _, __):
-        openFileDialog = OpenFileDialog()
-        openFileDialog.ShowDialog()
+        openFileDialog = OpenFileDialog(
+            Filter = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
+        )
+        if openFileDialog.ShowDialog() == DialogResult.Cancel:
+            return
+        
+        fileName = openFileDialog.FileName
+        image = None
+        try:
+            image = Bitmap(fileName)
+        except ArgumentException:
+            MessageBox.Show(fileName + " doesnt't appear to be a valid image file", 
+                            "Invalid image format",
+                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            return
         tabPage = self.tabControl.TabPages[0]
         if tabPage.Text != NO_IMAGE:
             tabPage = TabPage()
             self.tabControl.TabPages.Add(tabPage)
             self.tabControl.SelectedTab = tabPage
-        tabPage.Text = Path.GetFileName(openFileDialog.FileName)
+        tabPage.Text = Path.GetFileName(fileName)
         pictureBox = PictureBox(
             Dock = DockStyle.Fill,
-            Image = Bitmap(openFileDialog.FileName),                
+            Image = image,                
             SizeMode = PictureBoxSizeMode.StretchImage
         )
         tabPage.Controls.Clear()
