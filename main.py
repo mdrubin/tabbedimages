@@ -5,7 +5,7 @@ clr.AddReference('System.Windows.Forms')
 from System import ArgumentException
 from System.Drawing import Bitmap
 from System.Windows.Forms import (
-    Application, Clipboard, DialogResult, 
+    Application, Clipboard, DataObject, DialogResult, 
     DockStyle, Form, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, PictureBox, PictureBoxSizeMode, 
@@ -59,7 +59,9 @@ class MainForm(Form):
         fileMenu.DropDownItems.Add(exitMenuItem)
         
         editMenu = self.createMenuItem('Edit Menu', '&Edit')
+        copy =  self.createMenuItem('Copy', '&Copy', self.onCopy)
         paste = self.createMenuItem('Paste', '&Paste', self.onPaste)
+        editMenu.DropDownItems.Add(copy)
         editMenu.DropDownItems.Add(paste)
         
         menuStrip.Items.Add(fileMenu)
@@ -113,6 +115,14 @@ class MainForm(Form):
             self.tabControl.TabPages.Remove(selectedTab)
     
     
+    def onCopy(self, _, __):
+        dataObject = DataObject()
+        selectedTab = self.tabControl.SelectedTab
+        if selectedTab:
+            dataObject.SetImage(selectedTab.Controls[0].Image)
+            Clipboard.SetDataObject(dataObject)
+            
+            
     def onPaste(self, _, __):
         dataObject = Clipboard.GetDataObject()
         if dataObject.ContainsImage():
