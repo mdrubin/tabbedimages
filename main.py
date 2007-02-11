@@ -5,11 +5,12 @@ clr.AddReference('System.Windows.Forms')
 from System import ArgumentException
 from System.Drawing import Bitmap
 from System.Windows.Forms import (
-    Application, DialogResult, DockStyle, Form, MenuStrip,
+    Application, Clipboard, DialogResult, 
+    DockStyle, Form, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, PictureBox, PictureBoxSizeMode, 
     TabControl, TabAlignment, 
-    TabPage, ToolBar, ToolStripMenuItem    
+    TabPage, ToolStripMenuItem    
 )
 from System.IO import Path
 
@@ -39,7 +40,6 @@ class MainForm(Form):
             Text = text
         )
         if clickHandler:
-            print clickHandler
             menuItem.Click += clickHandler        
         return menuItem
     
@@ -53,12 +53,17 @@ class MainForm(Form):
         openMenuItem  = self.createMenuItem('Open', '&Open...', self.onOpen)
         closeMenuItem = self.createMenuItem('Close', '&Close', self.onClose)
         exitMenuItem  = self.createMenuItem('Exit', 'E&xit', lambda *_: Application.Exit())
-                
+        
         fileMenu.DropDownItems.Add(openMenuItem)
         fileMenu.DropDownItems.Add(closeMenuItem)   
         fileMenu.DropDownItems.Add(exitMenuItem)
-        menuStrip.Items.Add(fileMenu)
         
+        editMenu = self.createMenuItem('Edit Menu', '&Edit')
+        paste = self.createMenuItem('Paste', '&Paste', self.onPaste)
+        editMenu.DropDownItems.Add(paste)
+        
+        menuStrip.Items.Add(fileMenu)
+        menuStrip.Items.Add(editMenu)
         
         self.Controls.Add(menuStrip)
 
@@ -81,15 +86,11 @@ class MainForm(Form):
         )
         
         
-    def createTab(self, fileName):
-        image = self.getImage(fileName)
-        if not image:
-            return
-        
+    def createTab(self, image, label):        
         tabPage = TabPage()
         self.tabControl.TabPages.Add(tabPage)
         self.tabControl.SelectedTab = tabPage
-        tabPage.Text = Path.GetFileName(fileName)
+        tabPage.Text = label
         pictureBox = self.getPictureBox(image)
         tabPage.Controls.Add(pictureBox)        
             
@@ -100,14 +101,22 @@ class MainForm(Form):
             Multiselect = True
         )
         if openFileDialog.ShowDialog() == DialogResult.OK:                
-            for fileName in openFileDialog.FileNames:
-                self.createTab(fileName)
+            for fileName in openFileDialog.FileNames:                                
+                image = self.getImage(fileName)
+                if image:
+                   self.createTab(image, Path.GetFileName(fileName))
         
-        
+                
     def onClose(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
             self.tabControl.TabPages.Remove(selectedTab)
+    
+    
+    def onPaste(self, _, __):
+        dataObject = Clipboard.GetDataObject()
+        if dataObject.ContainsImage():
+            self.createTab(dataObject.GetImage(), "CLIPBOARD")
         
         
 Application.EnableVisualStyles()
