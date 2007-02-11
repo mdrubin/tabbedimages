@@ -68,8 +68,16 @@ class MainForm(Form):
                             "Invalid image format",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             return None
-
     
+    
+    def getPictureBox(self, image):    
+        return PictureBox(
+            Dock = DockStyle.Fill,
+            Image = image,                
+            SizeMode = PictureBoxSizeMode.StretchImage
+        )
+        
+        
     def createTab(self, fileName):
         image = self.getImage(fileName)
         if not image:
@@ -81,11 +89,7 @@ class MainForm(Form):
             self.tabControl.TabPages.Add(tabPage)
             self.tabControl.SelectedTab = tabPage
         tabPage.Text = Path.GetFileName(fileName)
-        pictureBox = PictureBox(
-            Dock = DockStyle.Fill,
-            Image = image,                
-            SizeMode = PictureBoxSizeMode.StretchImage
-        )
+        pictureBox = self.getPictureBox(image)
         tabPage.Controls.Clear()
         tabPage.Controls.Add(pictureBox)        
             
