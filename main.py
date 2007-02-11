@@ -66,12 +66,11 @@ class MainForm(Form):
             self.tabControl.TabPages.Add(tabPage)
             self.tabControl.SelectedTab = tabPage
         tabPage.Text = Path.GetFileName(openFileDialog.FileName)
-        pictureBox = PictureBox()
-
-        image = Bitmap(openFileDialog.FileName)
-        pictureBox.Image = image
-        pictureBox.ClientSize = image.Size
-               
+        pictureBox = PictureBox(
+            Dock = DockStyle.Fill,
+            Image = Bitmap(openFileDialog.FileName),                
+            SizeMode = PictureBoxSizeMode.StretchImage
+        )
         tabPage.Controls.Clear()
         tabPage.Controls.Add(pictureBox)
         
