@@ -49,11 +49,13 @@ class MainForm(Form):
             Name = "Main MenuStrip",
             Dock = DockStyle.Top
         )        
-        fileMenu     = self.createMenuItem('File Menu', '&File')        
-        openMenuItem = self.createMenuItem('Open', '&Open...', self.onOpen)
-        exitMenuItem = self.createMenuItem('Exit', 'E&xit', lambda *_: Application.Exit())
+        fileMenu      = self.createMenuItem('File Menu', '&File')        
+        openMenuItem  = self.createMenuItem('Open', '&Open...', self.onOpen)
+        closeMenuItem = self.createMenuItem('Close', '&Close', self.onClose)
+        exitMenuItem  = self.createMenuItem('Exit', 'E&xit', lambda *_: Application.Exit())
                 
-        fileMenu.DropDownItems.Add(openMenuItem)        
+        fileMenu.DropDownItems.Add(openMenuItem)
+        fileMenu.DropDownItems.Add(closeMenuItem)   
         fileMenu.DropDownItems.Add(exitMenuItem)
         menuStrip.Items.Add(fileMenu)
         
@@ -101,6 +103,12 @@ class MainForm(Form):
             for fileName in openFileDialog.FileNames:
                 self.createTab(fileName)
         
-
+        
+    def onClose(self, _, __):
+        selectedTab = self.tabControl.SelectedTab
+        if selectedTab:
+            self.tabControl.TabPages.Remove(selectedTab)
+        
+        
 Application.EnableVisualStyles()
 Application.Run(MainForm())
