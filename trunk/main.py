@@ -58,16 +58,21 @@ class MainForm(Form):
         menuStrip.Items.Add(fileMenu)
         
         self.Controls.Add(menuStrip)
-            
-            
-    def createTab(self, fileName):
-        image = None
+
+    
+    def getImage(self, fileName):        
         try:
-            image = Bitmap(fileName)
+            return Bitmap(fileName)
         except ArgumentException:
             MessageBox.Show(fileName + " doesnt't appear to be a valid image file", 
                             "Invalid image format",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            return None
+
+    
+    def createTab(self, fileName):
+        image = self.getImage(fileName)
+        if not image:
             return
         
         tabPage = self.tabControl.TabPages[0]
@@ -90,10 +95,9 @@ class MainForm(Form):
             Filter = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*",
             Multiselect = True
         )
-        if openFileDialog.ShowDialog() == DialogResult.Cancel:
-            return
-        for fileName in openFileDialog.FileNames:
-            self.createTab(fileName)
+        if openFileDialog.ShowDialog() == DialogResult.OK:                
+            for fileName in openFileDialog.FileNames:
+                self.createTab(fileName)
         
 
 Application.EnableVisualStyles()
