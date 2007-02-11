@@ -447,6 +447,32 @@ Event Handlers
     :class: handout
 
 
+Subclassing Controls
+====================
+
+.. class:: incremental small
+
+* It's not normal to pass a form direct to ``Application.Run``
+
+.. class:: incremental small
+
+* More usual to do GUI initialisation in a subclass of ``Form``
+
+
+.. class:: incremental small
+
+.. raw:: html
+    
+    {+coloring}
+    class MainForm(Form):
+        def __init__(self):
+            Form.__init__(self)
+            self.Text = "Hello World"
+    
+    form = MainForm()
+    Application.Run(form)
+    {-coloring}
+
 The Multi-Tabbed Image Viewer
 =============================
 
