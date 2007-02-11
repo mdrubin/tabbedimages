@@ -14,8 +14,6 @@ from System.Windows.Forms import (
 from System.IO import Path
 
 
-NO_IMAGE = 'No Image'
-
 class MainForm(Form):
     
     def __init__(self):
@@ -23,19 +21,15 @@ class MainForm(Form):
         self.Width = 350
         self.Height = 200
         
-        self.initTabs()
+        self.initTabControl()
         self.initMenu()
         
 
-    def initTabs(self):
-        self.tabControl = TabControl()
-        self.tabControl.Dock = DockStyle.Fill
-        self.tabControl.Alignment = TabAlignment.Bottom
-        
-        page = TabPage()
-        page.Text = NO_IMAGE
-        self.tabControl.TabPages.Add(page)
-        
+    def initTabControl(self):
+        self.tabControl = TabControl(
+            Dock = DockStyle.Fill,
+            Alignment = TabAlignment.Bottom
+        )
         self.Controls.Add(self.tabControl)
         
     
@@ -83,14 +77,11 @@ class MainForm(Form):
         if not image:
             return
         
-        tabPage = self.tabControl.TabPages[0]
-        if tabPage.Text != NO_IMAGE:
-            tabPage = TabPage()
-            self.tabControl.TabPages.Add(tabPage)
-            self.tabControl.SelectedTab = tabPage
+        tabPage = TabPage()
+        self.tabControl.TabPages.Add(tabPage)
+        self.tabControl.SelectedTab = tabPage
         tabPage.Text = Path.GetFileName(fileName)
         pictureBox = self.getPictureBox(image)
-        tabPage.Controls.Clear()
         tabPage.Controls.Add(pictureBox)        
             
             
