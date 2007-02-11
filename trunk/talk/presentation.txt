@@ -473,6 +473,15 @@ Subclassing Controls
     Application.Run(form)
     {-coloring}
 
+.. class:: handout
+
+.. note::
+
+    For example if you want to make a `Panel <http://msdn2.microsoft.com/en-us/library/system.windows.forms.panel_members.aspx>`_ selectable you need to call
+    ``panel.SetStyle(ControlStyles.Selectable, True)``. This is a protected method and
+    can only be called from a subclass.
+
+
 The Multi-Tabbed Image Viewer
 =============================
 
