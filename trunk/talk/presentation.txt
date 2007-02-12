@@ -537,6 +537,8 @@ Initialising with a TabControl
   It tells the parent control how to layout this control. `DockStyle <http://msdn2.microsoft.com/en-us/library/system.windows.forms.dockstyle.aspx>`_ is an enumeration and ``DockStyle.Fill`` means fill all the available space. Alternatives are ``Top``, ``Bottom``, ``Left``, ``Right`` and ``None`` (the default).
   
   An alternative way to layout controls is to use the ``Anchor`` property.  This is generally less useful.
+  
+  XXXX Mention Z-Order and multiple use of DockStyle.Top here...
 
 .. class:: incremental small
 
