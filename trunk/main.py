@@ -18,6 +18,7 @@ from System.IO import Path
 class MainForm(Form):
     
     def __init__(self):
+        Form.__init__(self)
         self.Text = 'Tabbed Image Viewer'
         self.Width = 350
         self.Height = 200
