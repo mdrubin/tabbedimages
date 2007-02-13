@@ -2,7 +2,10 @@ import clr
 clr.AddReference('System.Drawing')
 clr.AddReference('System.Windows.Forms')
 
-from icons import CopyIcon, PasteIcon
+from icons import (
+    CloseIcon, CopyIcon, NewIcon,
+    OpenIcon, PasteIcon, SaveIcon
+)
 from cPickle import loads
 from System import ArgumentException
 from System.Drawing import Bitmap, Color
@@ -79,21 +82,23 @@ class MainForm(Form):
             Dock = DockStyle.Top
         )
         
+        #
+        # CloseIcon, CopyIcon, NewIcon,
+        # OpenIcon, PasteIcon, SaveIcon
+        def addToolBarIcon(pickledIcon):
+            icon = loads(pickledIcon)        
+            button = ToolStripButton()
+            button.Image = icon
+            button.DisplayStyle = ToolStripItemDisplayStyle.Image
+            toolBar.Items.Add(button)
         
-        copyIcon = loads(CopyIcon)        
-        copyButton = ToolStripButton()
-        copyButton.Image = copyIcon
-        copyButton.DisplayStyle = ToolStripItemDisplayStyle.Image
-        toolBar.Items.Add(copyButton)
+        addToolBarIcon(NewIcon)
+        addToolBarIcon(OpenIcon)
+        addToolBarIcon(SaveIcon)
+        addToolBarIcon(CloseIcon)
+        addToolBarIcon(CopyIcon)
+        addToolBarIcon(PasteIcon)
                 
-        pasteIcon = loads(PasteIcon)
-        pasteButton = ToolStripButton()
-        pasteButton.Image = pasteIcon
-        pasteButton.DisplayStyle = ToolStripItemDisplayStyle.Image
-        toolBar.Items.Add(pasteButton)
-        
-        
-
         self.Controls.Add(toolBar)
         
         
