@@ -2,7 +2,7 @@ import clr
 clr.AddReference('System.Drawing')
 clr.AddReference('System.Windows.Forms')
 
-from icons import CopyIcon
+from icons import CopyIcon, PasteIcon
 from cPickle import loads
 from System import ArgumentException
 from System.Drawing import Bitmap, Color
@@ -80,12 +80,20 @@ class MainForm(Form):
         )
         
         
-        copyIcon = loads(CopyIcon)
-        
+        copyIcon = loads(CopyIcon)        
         copyButton = ToolStripButton()
         copyButton.Image = copyIcon
         copyButton.DisplayStyle = ToolStripItemDisplayStyle.Image
         toolBar.Items.Add(copyButton)
+                
+        pasteIcon = loads(PasteIcon)
+        pasteButton = ToolStripButton()
+        pasteButton.Image = pasteIcon
+        pasteButton.DisplayStyle = ToolStripItemDisplayStyle.Image
+        toolBar.Items.Add(pasteButton)
+        
+        
+
         self.Controls.Add(toolBar)
         
         
