@@ -211,13 +211,31 @@ Using .NET: Assemblies
 
 * To do that we use the ``clr`` module, an IronPython built-in
 
-.. class:: handout
-
-    Other uses of clr module XXXX.
-
 .. class:: incremental
 
 * ``clr.AddReference('System.Windows.Forms')``
+
+.. class:: handout
+
+    You can also load an assembly with a 'strong name', specifying the exact version you want:
+
+
+    .. raw:: html
+
+        {+coloring}    
+        ref = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+        clr.AddReferenceByName(ref)
+        {-coloring}
+    
+    Alternatively you can load an assembly object from a specific path, and then add a reference to that assembly object.
+
+    .. raw:: html
+
+        {+coloring}    
+        from System.Reflection import Assembly
+        assembly = Assembly.LoadFile(assemblyPath)
+        clr.AddReference(assembly)
+        {-coloring}
     
 
 The Interactive Interpreter
@@ -356,7 +374,7 @@ Setting Attributes
 
     So no conversion is necessary.
     
-    XXXX Demonstrate looking up the Text property in the docs ?
+    Most of the common properties are inherited from the ``Control`` class. So as you learn to configure controls it becomes easier.
 
 
 Adding Controls
@@ -395,9 +413,9 @@ Adding Controls
 
 .. class:: handout
 
-    XXXX notes about Z-Order
+    The Z-order is named because it is the 'Z-axis'. Controls you add *first* are higher in the Z-order and so if they overlap you will saee the one you added first. This is more of a problem if you layout your GUI using absolute positions.
     
-    XXXX or a bullet point about properties inherited from 'Control' ???
+    You can use methods on the ``ControlCollection`` (the collections property) to reorder the controls, or call the ``BringToFront`` method.
 
    
 Event Handlers
