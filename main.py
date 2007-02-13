@@ -86,9 +86,11 @@ class MainForm(Form):
         # CloseIcon, CopyIcon, NewIcon,
         # OpenIcon, PasteIcon, SaveIcon
         def addToolBarIcon(pickledIcon):
-            icon = loads(pickledIcon)        
+            icon = loads(pickledIcon)       
             button = ToolStripButton()
+            button.ImageTransparentColor = Color.Magenta
             button.Image = icon
+            button.Image
             button.DisplayStyle = ToolStripItemDisplayStyle.Image
             toolBar.Items.Add(button)
         
