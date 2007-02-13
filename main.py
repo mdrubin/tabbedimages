@@ -12,7 +12,7 @@ from System.Windows.Forms import (
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, PictureBox, PictureBoxSizeMode, 
     TabControl, TabAlignment, 
-    TabPage, ToolBar, ToolBarButton, ToolStripMenuItem    
+    TabPage, ToolBar, ToolStrip, ToolStripButton, ToolBarButton, ToolStripMenuItem, ToolStripItemDisplayStyle
 )
 from System.IO import Path
 
@@ -75,18 +75,17 @@ class MainForm(Form):
 
     
     def initToolBar(self):
-        toolBar = ToolBar(
+        toolBar = ToolStrip(
             Dock = DockStyle.Top
         )
-        imageList = ImageList()
-        imageList.TransparentColor = Color.White
+        
+        
         copyIcon = loads(CopyIcon)
         
-        imageList.Images.Add(copyIcon)
-        toolBar.ImageList = imageList
-        copyButton = ToolBarButton()
-        copyButton.ImageIndex = 0
-        toolBar.Buttons.Add(copyButton)
+        copyButton = ToolStripButton()
+        copyButton.Image = copyIcon
+        copyButton.DisplayStyle = ToolStripItemDisplayStyle.Image
+        toolBar.Items.Add(copyButton)
         self.Controls.Add(toolBar)
         
         
