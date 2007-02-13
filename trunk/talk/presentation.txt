@@ -556,7 +556,7 @@ Initialising with a TabControl
   
   An alternative way to layout controls is to use the ``Anchor`` property.  This is generally less useful.
   
-  XXXX Mention Z-Order and multiple use of DockStyle.Top here...
+  If you have several controls which use ``DockStyle.Top`` then they will be stacked horizontally - the first one going to the top of the parent, the next one to the bottom of the previous one  and so on. Can be very useful. In our applicaiton we
 
 .. class:: incremental small
 
