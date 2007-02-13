@@ -115,19 +115,22 @@ class MainForm(Form):
     
     def getPictureBox(self, image):    
         return PictureBox(
-            Dock = DockStyle.Fill,
             Image = image,                
-            SizeMode = PictureBoxSizeMode.StretchImage
+            SizeMode = PictureBoxSizeMode.AutoSize
         )
         
         
     def createTab(self, image, label):        
         tabPage = TabPage()
-        self.tabControl.TabPages.Add(tabPage)
-        self.tabControl.SelectedTab = tabPage
         tabPage.Text = label
         pictureBox = self.getPictureBox(image)
-        tabPage.Controls.Add(pictureBox)        
+        panel = Panel()
+        tabPage.Dock = DockStyle.Fill
+        tabPage.AutoScroll = True
+        tabPage.Controls.Add(pictureBox)
+        
+        self.tabControl.TabPages.Add(tabPage)
+        self.tabControl.SelectedTab = tabPage
             
             
     def onOpen(self, _, __):
