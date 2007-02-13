@@ -2,15 +2,17 @@ import clr
 clr.AddReference('System.Drawing')
 clr.AddReference('System.Windows.Forms')
 
+from icons import CopyIcon
+from cPickle import loads
 from System import ArgumentException
-from System.Drawing import Bitmap
+from System.Drawing import Bitmap, Color
 from System.Windows.Forms import (
     Application, Clipboard, DataObject, DialogResult, 
-    DockStyle, Form, MenuStrip,
+    DockStyle, Form, ImageList, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, PictureBox, PictureBoxSizeMode, 
     TabControl, TabAlignment, 
-    TabPage, ToolStripMenuItem    
+    TabPage, ToolBar, ToolBarButton, ToolStripMenuItem    
 )
 from System.IO import Path
 
@@ -24,6 +26,7 @@ class MainForm(Form):
         self.Height = 200
         
         self.initTabControl()
+        self.initToolBar()
         self.initMenu()
         
 
@@ -41,7 +44,7 @@ class MainForm(Form):
             Text = text
         )
         if clickHandler:
-            menuItem.Click += clickHandler        
+            menuItem.Click += clickHandler
         return menuItem
     
     
@@ -50,7 +53,7 @@ class MainForm(Form):
             Name = "Main MenuStrip",
             Dock = DockStyle.Top
         )        
-        fileMenu      = self.createMenuItem('File Menu', '&File')        
+        fileMenu      = self.createMenuItem('File Menu', '&File')
         openMenuItem  = self.createMenuItem('Open', '&Open...', self.onOpen)
         closeMenuItem = self.createMenuItem('Close', '&Close', self.onClose)
         exitMenuItem  = self.createMenuItem('Exit', 'E&xit', lambda *_: Application.Exit())
@@ -71,6 +74,22 @@ class MainForm(Form):
         self.Controls.Add(menuStrip)
 
     
+    def initToolBar(self):
+        toolBar = ToolBar(
+            Dock = DockStyle.Top
+        )
+        imageList = ImageList()
+        imageList.TransparentColor = Color.White
+        copyIcon = loads(CopyIcon)
+        
+        imageList.Images.Add(copyIcon)
+        toolBar.ImageList = imageList
+        copyButton = ToolBarButton()
+        copyButton.ImageIndex = 0
+        toolBar.Buttons.Add(copyButton)
+        self.Controls.Add(toolBar)
+        
+        
     def getImage(self, fileName):        
         try:
             return Bitmap(fileName)
