@@ -90,7 +90,6 @@ class MainForm(Form):
             button = ToolStripButton()
             button.ImageTransparentColor = Color.Magenta
             button.Image = icon
-            button.Image
             button.DisplayStyle = ToolStripItemDisplayStyle.Image
             toolBar.Items.Add(button)
         
