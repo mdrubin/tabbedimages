@@ -1,3 +1,9 @@
+# Tabbed Image Viewer
+# (c) 2007 Andrzej Krzywda, Christian Muirhead & Michael Foord
+# email: fuzzyman AT voidspace DOT org DOT uk
+# web:   http://www.voidspace.org.uk/ironpython/
+#
+
 import clr
 clr.AddReference('System.Drawing')
 clr.AddReference('System.Windows.Forms')
