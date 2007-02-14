@@ -3,7 +3,7 @@ clr.AddReference('System.Drawing')
 clr.AddReference('System.Windows.Forms')
 
 from icons import (
-    CloseIcon, CopyIcon, NewIcon,
+    CloseIcon, CopyIcon,
     OpenIcon, PasteIcon, SaveIcon
 )
 from cPickle import loads
@@ -97,7 +97,6 @@ class MainForm(Form):
                 button.Click += clickHandler
             toolBar.Items.Add(button)
         
-        addToolBarIcon(NewIcon, None)
         addToolBarIcon(OpenIcon, self.onOpen)
         addToolBarIcon(SaveIcon, self.onSave)
         addToolBarIcon(CloseIcon, self.onClose)
