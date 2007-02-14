@@ -566,6 +566,8 @@ Initialising with a TabControl
 Creating New TabPages
 =====================
 
+XXX making the tabpage scollable
+
 .. class:: incremental small
 
 .. raw:: html
@@ -662,6 +664,7 @@ Other controls used in the application include :
 * Context menu
 * Clipboard
 * Screenshot
+* Pickle from `fepy <http://fepy.sourceforge.net>`_ to load pickled ``Bitmap`` objects
 
 * Screenshots from Mono
 
