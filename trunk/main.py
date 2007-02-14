@@ -13,7 +13,7 @@ from System.Windows.Forms import (
     Application, Clipboard, DataObject, DialogResult, 
     DockStyle, Form, ImageList, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
-    OpenFileDialog, Panel, PictureBox, PictureBoxSizeMode, 
+    OpenFileDialog, PictureBox, PictureBoxSizeMode, 
     TabControl, TabAlignment, 
     TabPage, ToolStrip, ToolStripButton, 
     ToolStripMenuItem, ToolStripItemDisplayStyle
@@ -124,7 +124,6 @@ class MainForm(Form):
         tabPage = TabPage()
         tabPage.Text = label
         pictureBox = self.getPictureBox(image)
-        panel = Panel()
         tabPage.Dock = DockStyle.Fill
         tabPage.AutoScroll = True
         tabPage.Controls.Add(pictureBox)
