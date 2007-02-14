@@ -10,3 +10,7 @@ distribution.
 
 If you have a batch file setup on your PATH called 'ip', which runs
 IronPython, then you can use 'run.bat'.
+
+Alternatively, build the C# project from the exe directory (using Visual 
+Studio Express C#) and use tabbedimages.exe from the same directory as 
+'main.py'. You will need the two IronPython dlls in the same directory.
