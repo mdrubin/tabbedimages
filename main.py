@@ -89,13 +89,14 @@ class MainForm(Form):
             button.ImageTransparentColor = color
             button.Image = icon
             button.DisplayStyle = ToolStripItemDisplayStyle.Image
-            button.Click += clickHandler
+            if clickHandler:
+                button.Click += clickHandler
             toolBar.Items.Add(button)
         
         addToolBarIcon(NewIcon)
         addToolBarIcon(OpenIcon, self.onOpen)
         addToolBarIcon(SaveIcon)
-        addToolBarIcon(CloseIcon)
+        addToolBarIcon(CloseIcon, self.onClose)
         addToolBarIcon(CopyIcon, self.onCopy)
         addToolBarIcon(PasteIcon, self.onPaste)
                 
