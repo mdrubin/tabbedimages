@@ -9,17 +9,19 @@ from icons import (
 from cPickle import loads
 from System import ArgumentException
 from System.Drawing import Bitmap, Color
+from System.Drawing.Imaging import ImageFormat
 from System.Windows.Forms import (
     Application, Clipboard, DataObject, DialogResult, 
     DockStyle, Form, ImageList, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, PictureBox, PictureBoxSizeMode, 
-    TabControl, TabAlignment, 
+    SaveFileDialog, TabControl, TabAlignment, 
     TabPage, ToolStrip, ToolStripButton, 
     ToolStripMenuItem, ToolStripItemDisplayStyle
 )
 from System.IO import Path
 
+FILTER = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
 
 class MainForm(Form):
     
@@ -59,10 +61,12 @@ class MainForm(Form):
         )        
         fileMenu      = self.createMenuItem('File Menu', '&File')
         openMenuItem  = self.createMenuItem('Open', '&Open...', self.onOpen)
+        saveMenuItem  = self.createMenuItem('Save', '&Save...', self.onSave)
         closeMenuItem = self.createMenuItem('Close', '&Close', self.onClose)
         exitMenuItem  = self.createMenuItem('Exit', 'E&xit', lambda *_: Application.Exit())
         
         fileMenu.DropDownItems.Add(openMenuItem)
+        fileMenu.DropDownItems.Add(saveMenuItem)        
         fileMenu.DropDownItems.Add(closeMenuItem)   
         fileMenu.DropDownItems.Add(exitMenuItem)
         
@@ -95,7 +99,7 @@ class MainForm(Form):
         
         addToolBarIcon(NewIcon, None)
         addToolBarIcon(OpenIcon, self.onOpen)
-        addToolBarIcon(SaveIcon, None)
+        addToolBarIcon(SaveIcon, self.onSave)
         addToolBarIcon(CloseIcon, self.onClose)
         addToolBarIcon(CopyIcon, self.onCopy)
         addToolBarIcon(PasteIcon, self.onPaste)
@@ -134,7 +138,7 @@ class MainForm(Form):
             
     def onOpen(self, _, __):
         openFileDialog = OpenFileDialog(
-            Filter = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*",
+            Filter = FILTER,
             Multiselect = True
         )
         if openFileDialog.ShowDialog() == DialogResult.OK:                
@@ -163,6 +167,24 @@ class MainForm(Form):
         if dataObject.ContainsImage():
             self.createTab(dataObject.GetImage(), "CLIPBOARD")
         
+    def onSave(self, _, __):
+        selectedTab = self.tabControl.SelectedTab
+        if selectedTab:
+            image = selectedTab.Controls[0].Image
+            saveFileDialog = SaveFileDialog()
+            saveFileDialog.Filter = FILTER
+            if saveFileDialog.ShowDialog() == DialogResult.OK:
+                extension = Path.GetExtension(saveFileDialog.FileName)
+                format = ImageFormat.Jpeg
+                if extension.lower() == "bmp":
+                    format = ImageFormat.Bmp
+                elif extension.lower() == "jpg":
+                    format = ImageFormat.Jpeg                    
+                elif extension.lower() == "gif":
+                    format = ImageFormat.Gif
+                image.Save(saveFileDialog.FileName, format)
+                
+                
         
 Application.EnableVisualStyles()
 Application.Run(MainForm())
