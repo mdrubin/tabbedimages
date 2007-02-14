@@ -657,7 +657,6 @@ Other Topics
 
 Other controls used in the application include :
 
-* Ordinary Menu
 * Toolstrip
 * System message box
 * Context menu
