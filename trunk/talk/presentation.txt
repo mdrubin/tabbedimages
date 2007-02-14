@@ -197,7 +197,7 @@ Using .NET: Assemblies
 
 .. class:: handout
 
-    Difference between assemblies and namespaces XXX.
+    Namespaces are the libraries contained within assemblies. You import from the namespaces after adding a reference to the assembly. Namespaces *usually* have the same name as the assembly, but not always.
 
 .. class:: incremental
 
@@ -552,11 +552,11 @@ Initialising with a TabControl
 
 .. class:: handout
 
-  It tells the parent control how to layout this control. `DockStyle <http://msdn2.microsoft.com/en-us/library/system.windows.forms.dockstyle.aspx>`_ is an enumeration and ``DockStyle.Fill`` means fill all the available space. Alternatives are ``Top``, ``Bottom``, ``Left``, ``Right`` and ``None`` (the default).
-  
-  An alternative way to layout controls is to use the ``Anchor`` property.  This is generally less useful.
-  
-  If you have several controls which use ``DockStyle.Top`` then they will be stacked horizontally - the first one going to the top of the parent, the next one to the bottom of the previous one  and so on. Can be very useful. In our applicaiton we
+    It tells the parent control how to layout this control. `DockStyle <http://msdn2.microsoft.com/en-us/library/system.windows.forms.dockstyle.aspx>`_ is an enumeration and ``DockStyle.Fill`` means fill all the available space. Alternatives are ``Top``, ``Bottom``, ``Left``, ``Right`` and ``None`` (the default).
+    
+    An alternative way to layout controls is to use the ``Anchor`` property.  This is generally less useful.
+    
+    If you have several controls which use ``DockStyle.Top`` then they will be stacked horizontally - for some reason in the opposite order to which they are added: the last one going to the top of the parent, the one before last underneath the last one and so on. Can be very useful. In our application we first add the Tabcontrol (``DockStyle.Fill``) followed by the ToolStrip (``DockStyle.Top`` - this appears in the middle), last of all the MenuStrip (``DockStyle.Top``) which appears at the top.
 
 .. class:: incremental small
 
