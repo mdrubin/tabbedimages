@@ -83,19 +83,19 @@ class MainForm(Form):
             Dock = DockStyle.Top
         )
         
-        def addToolBarIcon(pickledIcon, clickHandler=None, color=Color.Magenta):
-            icon = loads(pickledIcon)       
+        def addToolBarIcon(pickledIcon, clickHandler):
+            icon = loads(pickledIcon)     
             button = ToolStripButton()
-            button.ImageTransparentColor = color
+            button.ImageTransparentColor = Color.Magenta
             button.Image = icon
             button.DisplayStyle = ToolStripItemDisplayStyle.Image
             if clickHandler:
                 button.Click += clickHandler
             toolBar.Items.Add(button)
         
-        addToolBarIcon(NewIcon)
+        addToolBarIcon(NewIcon, None)
         addToolBarIcon(OpenIcon, self.onOpen)
-        addToolBarIcon(SaveIcon)
+        addToolBarIcon(SaveIcon, None)
         addToolBarIcon(CloseIcon, self.onClose)
         addToolBarIcon(CopyIcon, self.onCopy)
         addToolBarIcon(PasteIcon, self.onPaste)
