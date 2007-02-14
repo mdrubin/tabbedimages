@@ -17,7 +17,7 @@ from System import ArgumentException
 from System.Drawing import Bitmap, Color
 from System.Drawing.Imaging import ImageFormat
 from System.Windows.Forms import (
-    Application, Clipboard, DataObject, DialogResult,
+    Application, Clipboard, ContextMenuStrip, DataObject, DialogResult,
     DockStyle, Form, ImageList, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, PictureBox, PictureBoxSizeMode,
@@ -40,6 +40,7 @@ class MainForm(Form):
         self.initTabControl()
         self.initToolBar()
         self.initMenu()
+        self.initContextMenu()
 
 
     def initTabControl(self):
@@ -84,8 +85,15 @@ class MainForm(Form):
 
         menuStrip.Items.Add(fileMenu)
         menuStrip.Items.Add(editMenu)
-
         self.Controls.Add(menuStrip)
+        
+        
+    def initContextMenu(self):
+        contextMenuStrip = ContextMenuStrip()        
+        contextMenuStrip.Items.Add(self.createMenuItem('Copy', '&Copy', self.onCopy))
+        contextMenuStrip.Items.Add(self.createMenuItem('Paste', '&Paste', self.onPaste))
+        contextMenuStrip.Items.Add(self.createMenuItem('Close', '&Close', self.onClose))
+        self.tabControl.ContextMenuStrip = contextMenuStrip
 
 
     def initToolBar(self):
@@ -117,7 +125,7 @@ class MainForm(Form):
         try:
             return Bitmap(fileName)
         except ArgumentException:
-            MessageBox.Show(fileName + " doesnt't appear to be a valid image file",
+            MessageBox.Show(fileName + " doesn't appear to be a valid image file",
                             "Invalid image format",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             return None
