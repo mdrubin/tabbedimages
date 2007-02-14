@@ -13,9 +13,9 @@ from System.Windows.Forms import (
     Application, Clipboard, DataObject, DialogResult, 
     DockStyle, Form, ImageList, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
-    OpenFileDialog, PictureBox, PictureBoxSizeMode, 
+    OpenFileDialog, Panel, PictureBox, PictureBoxSizeMode, 
     TabControl, TabAlignment, 
-    TabPage, ToolBar, ToolStrip, ToolStripButton, ToolBarButton, ToolStripMenuItem, ToolStripItemDisplayStyle
+    TabPage, ToolStrip, ToolStripButton, ToolStripMenuItem, ToolStripItemDisplayStyle
 )
 from System.IO import Path
 
@@ -82,19 +82,17 @@ class MainForm(Form):
             Dock = DockStyle.Top
         )
         
-        #
-        # CloseIcon, CopyIcon, NewIcon,
-        # OpenIcon, PasteIcon, SaveIcon
-        def addToolBarIcon(pickledIcon):
+        def addToolBarIcon(pickledIcon, clickHandler=None, color=Color.Magenta):
             icon = loads(pickledIcon)       
             button = ToolStripButton()
-            button.ImageTransparentColor = Color.Magenta
+            button.ImageTransparentColor = color
             button.Image = icon
             button.DisplayStyle = ToolStripItemDisplayStyle.Image
+            button.Click += clickHandler
             toolBar.Items.Add(button)
         
         addToolBarIcon(NewIcon)
-        addToolBarIcon(OpenIcon)
+        addToolBarIcon(OpenIcon, self.onOpen)
         addToolBarIcon(SaveIcon)
         addToolBarIcon(CloseIcon)
         addToolBarIcon(CopyIcon)
