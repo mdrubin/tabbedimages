@@ -552,7 +552,7 @@ Initialising with a TabControl
 
 .. class:: handout
 
-    It tells the parent control how to layout this control. `DockStyle <http://msdn2.microsoft.com/en-us/library/system.windows.forms.dockstyle.aspx>`_ is an enumeration and ``DockStyle.Fill`` means fill all the available space. Alternatives are ``Top``, ``Bottom``, ``Left``, ``Right`` and ``None`` (the default).
+    It tells the parent control how to layout this control. `DockStyle <http://msdn2.microsoft.com/en-us/library/system.windows.forms.dockstyle.aspx>`_ is an enumeration (a .NET type) and ``DockStyle.Fill`` means fill all the available space. Alternatives are ``Top``, ``Bottom``, ``Left``, ``Right`` and ``None`` (the default).
     
     An alternative way to layout controls is to use the ``Anchor`` property.  This is generally less useful.
     
@@ -583,7 +583,6 @@ Creating New TabPages
 .. class:: handout
 
     All the names here are from the ``System.Windows.Forms`` namespace.
-
 
 .. class:: incremental
 
@@ -629,22 +628,52 @@ Open File Dialog
 Other Topics
 ============
 
-* File dialog.
-* System message box.
-* Context menu and ordinary menu.
-* Clipboard.
-* Bitmap
+Other controls used in the application include :
+
+* Ordinary Menu
+* Toolstrip
+* System message box
+* Context menu
+* Clipboard
+* Screenshot
 
 * Screenshots from Mono
 
 
+Further Topics
+==============
 
-Further
-=======
+.. class:: incremental
 
-Creating dialogs in Visual Studio Express Designer (C#), subclassing in IronPython
-Creating C# classes and using from IronPython
-Custom executable (most basic form of embedding)
+* Creating dialogs with the Visual Studio Express Designer (C#), then subclassing in IronPython
+
+.. class:: incremental
+
+* Creating C# classes and using them from IronPython
+
+.. class:: incremental
+
+* Custom executable (most basic form of embedding)
+
+
+Conclusion
+==========
+
+.. class:: incremental
+
+* Windows Forms is a rich GUI with many controls
+
+.. class:: incremental
+
+* Windows Forms 2.0 has a generally sane (almost Pythonic) API
+
+.. class:: handout
+
+    A lot, but not all, of WIndows Forms 2.0 is available under Mono.
+
+.. class:: incremental
+
+* If any of the .NET framework is appealing, then Windows Forms is a wise choice
 
 
 Questions
