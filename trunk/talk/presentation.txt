@@ -625,6 +625,33 @@ Open File Dialog
 * Call ``ShowDialog`` on any form (or dialog) to open it modally
 
 
+The Menu
+========
+
+.. class:: incremental small
+
+.. raw:: html
+    
+    {+coloring} 
+    menuStrip = MenuStrip(Name="Main MenuStrip", Dock=DockStyle.Top)
+    fileMenu  = ToolStripMenuItem(Name="File Menu", Text='&File')
+    openMenuItem  = ToolStripMenuItem(Name="Open", Text='&Open...')
+    openMenuItem.Click += self.onOpen
+    
+    fileMenu.DropDownItems.Add(openMenuItem)
+    menuStrip.Items.Add(fileMenu)
+    self.Controls.Add(menuStrip)
+    {-coloring}
+
+.. class:: incremental
+
+* ``MenuStrip`` is the top level menu bar
+
+.. class:: incremental
+
+* ``ToolStripMenuItem`` can either be sub menus (using ``DropDownItems``) or menu items with ``Click`` handlers.
+
+
 Other Topics
 ============
 
