@@ -15,7 +15,8 @@ from System.Windows.Forms import (
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, Panel, PictureBox, PictureBoxSizeMode, 
     TabControl, TabAlignment, 
-    TabPage, ToolStrip, ToolStripButton, ToolStripMenuItem, ToolStripItemDisplayStyle
+    TabPage, ToolStrip, ToolStripButton, 
+    ToolStripMenuItem, ToolStripItemDisplayStyle
 )
 from System.IO import Path
 
@@ -95,8 +96,8 @@ class MainForm(Form):
         addToolBarIcon(OpenIcon, self.onOpen)
         addToolBarIcon(SaveIcon)
         addToolBarIcon(CloseIcon)
-        addToolBarIcon(CopyIcon)
-        addToolBarIcon(PasteIcon)
+        addToolBarIcon(CopyIcon, self.onCopy)
+        addToolBarIcon(PasteIcon, self.onPaste)
                 
         self.Controls.Add(toolBar)
         
