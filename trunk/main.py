@@ -132,17 +132,25 @@ class MainForm(Form):
             return None
 
 
-    def getPictureBox(self, image):
+    def getPictureBox1(self, image):
         return PictureBox(
             Image = image,
-            SizeMode = PictureBoxSizeMode.StretchImage
+            SizeMode = PictureBoxSizeMode.AutoSize
+        )
+
+
+    def getPictureBox2(self, image):
+        return PictureBox(
+            Image = image,
+            SizeMode = PictureBoxSizeMode.StretchImage,
+            Dock = DockStyle.Fill
         )
 
 
     def createTab(self, image, label):
         tabPage = TabPage()
         tabPage.Text = label
-        pictureBox = self.getPictureBox(image)
+        pictureBox = self.getPictureBox1(image)
         tabPage.Dock = DockStyle.Fill
         tabPage.AutoScroll = True
         tabPage.Controls.Add(pictureBox)
@@ -205,10 +213,13 @@ class MainForm(Form):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
             if selectedTab.Controls:
-                if selectedTab.Controls[0].SizeMode == PictureBoxSizeMode.AutoSize:
-                    selectedTab.Controls[0].SizeMode = PictureBoxSizeMode.StretchImage
+                currentMode = selectedTab.Controls[0].SizeMode
+                image = selectedTab.Controls[0].Image
+                selectedTab.Controls.Remove(selectedTab.Controls[0])
+                if currentMode == PictureBoxSizeMode.AutoSize:
+                    selectedTab.Controls.Add(self.getPictureBox2(image))
                 else:
-                    selectedTab.Controls[0].SizeMode = PictureBoxSizeMode.AutoSize
+                    selectedTab.Controls.Add(self.getPictureBox1(image))
         
 
 Application.EnableVisualStyles()
