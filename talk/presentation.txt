@@ -8,6 +8,12 @@
 .. include:: <s5defs.txt>
 .. footer:: Michael Foord & Andrzej Krzywda 2007
 
+.. image:: images/ironsnake.jpg
+    :align: center
+    :width: 500
+    :height: 121
+    :alt: IronPython: The metal slitherer
+
 .. contents:: IronPython & Winforms
    :class: handout
 
@@ -197,7 +203,7 @@ Using .NET: Assemblies
 
 .. class:: handout
 
-    Namespaces are the libraries contained within assemblies. You import from the namespaces after adding a reference to the assembly. Namespaces *usually* have the same name as the assembly, but not always.
+    Namespaces are the libraries contained within assemblies. You import from the namespaces after adding a reference to an assembly. Namespaces *usually* have the same name as the assembly, but not always.
 
 .. class:: incremental
 
@@ -362,6 +368,10 @@ Setting Attributes
 
 * The ``Text`` property gets or sets a string
 
+.. class:: handout
+
+  The C# example of this on `Text proeprty docs <http://msdn2.microsoft.com/en-us/library/system.windows.forms.form.text.aspx>`_ says: ``public override string Text { get; set; }``. Meaning that it is a public property, that can be both fetched and set, and it takes (or returns) a string. (And that on the form, the ``Text`` property overrides the one inherited from ``Control``.)
+  
 .. class:: incremental
 
 * On a form this is the title
@@ -566,8 +576,6 @@ Initialising with a TabControl
 Creating New TabPages
 =====================
 
-XXX making the tabpage scollable
-
 .. class:: incremental small
 
 .. raw:: html
@@ -575,11 +583,12 @@ XXX making the tabpage scollable
     {+coloring}
     def createTab(self, image, label):        
         tabPage = TabPage()
+        tabPage.AutoScroll = True   # Create scrollbars if needed
+        tabPage.Text = label          # The tab label
+        tabPage.Dock = DockStyle.Fill
+        tabPage.Controls.Add(self.getPictureBox(image))
         self.tabControl.TabPages.Add(tabPage)
         self.tabControl.SelectedTab = tabPage
-        tabPage.Text = label
-        pictureBox = self.getPictureBox(image)
-        tabPage.Controls.Add(pictureBox)   
     {-coloring}
 
 .. class:: handout
@@ -588,7 +597,7 @@ XXX making the tabpage scollable
 
 .. class:: incremental
 
-* New tab pages must be added to the ``TabControl.TabPages`` collection
+* New tabs must be added to the ``TabControl.TabPages`` collection
 
 .. class:: incremental
 
@@ -654,12 +663,46 @@ The Menu
 * ``ToolStripMenuItem`` can either be sub menus (using ``DropDownItems``) or menu items with ``Click`` handlers.
 
 
+The Toolbar
+===========
+
+.. class:: incremental small
+
+.. raw:: html
+    
+    {+coloring} 
+    toolBar = ToolStrip(Dock = DockStyle.Top)
+    button = ToolStripButton()
+    button.Image = Bitmap(fileName)          
+    button.ImageTransparentColor = Color.Magenta       
+    button.ToolTipText = button.Name = name
+    button.DisplayStyle = ToolStripItemDisplayStyle.Image
+    button.Click += clickHandler        # click handler method or function
+    toolBar.Items.Add(button)
+    {-coloring}
+    
+.. class:: handout
+
+    There is a class called ``ToolBar``. This is an ugly abomination from Windows Forms 1, with an insane API. Use `ToolStrip <http://msdn2.microsoft.com/en-us/library/system.windows.forms.toolstrip.aspx>`_ instead.
+
+.. class:: incremental
+
+* ``ToolStrip`` is the strip itself
+
+.. class:: incremental
+
+* Each item is a ``ToolStripButton``
+
+.. class:: handout
+
+    Creating images (for the picture boxes or for icons) is very easy. You can instantiate the `Bitmap <>`_ class with a filename, or use a static method on the Image class: `Imgae.FromFile <>`_.
+
+
 Other Topics
 ============
 
 Other controls used in the application include :
 
-* Toolstrip
 * System message box
 * Context menu
 * Clipboard
@@ -684,13 +727,17 @@ Further Topics
 
 * Custom executable (most basic form of embedding)
 
+.. class:: handout
+
+    There is an example of this in the Tabbed Images project.
+
 
 Conclusion
 ==========
 
 .. class:: incremental
 
-* Windows Forms is a rich GUI with many controls
+* Windows Forms is a rich GUI toolkit, with many controls
 
 .. class:: incremental
 
