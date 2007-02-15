@@ -102,10 +102,10 @@ class MainForm(Form):
         )
 
         def addToolBarIcon(pickledIcon, name, clickHandler):
-            icon = loads(pickledIcon)
             button = ToolStripButton()
-            button.ImageTransparentColor = Color.Magenta
-            button.Image = icon
+            if pickledIcon:
+                button.Image = loads(pickledIcon)            
+            button.ImageTransparentColor = Color.Magenta            
             button.ToolTipText = button.Name = name
             button.DisplayStyle = ToolStripItemDisplayStyle.Image
             if clickHandler:
@@ -117,6 +117,7 @@ class MainForm(Form):
         addToolBarIcon(CloseIcon, "Close", self.onClose)
         addToolBarIcon(CopyIcon, "Copy", self.onCopy)
         addToolBarIcon(PasteIcon, "Paste", self.onPaste)
+        addToolBarIcon(None, "Image mode", self.onImageMode)
 
         self.Controls.Add(toolBar)
 
@@ -134,7 +135,7 @@ class MainForm(Form):
     def getPictureBox(self, image):
         return PictureBox(
             Image = image,
-            SizeMode = PictureBoxSizeMode.AutoSize
+            SizeMode = PictureBoxSizeMode.StretchImage
         )
 
 
@@ -181,6 +182,7 @@ class MainForm(Form):
         if dataObject.ContainsImage():
             self.createTab(dataObject.GetImage(), "CLIPBOARD")
 
+
     def onSave(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
@@ -199,6 +201,15 @@ class MainForm(Form):
                 image.Save(saveFileDialog.FileName, format)
 
 
+    def onImageMode(self, _, __):
+        selectedTab = self.tabControl.SelectedTab
+        if selectedTab:
+            if selectedTab.Controls:
+                if selectedTab.Controls[0].SizeMode == PictureBoxSizeMode.AutoSize:
+                    selectedTab.Controls[0].SizeMode = PictureBoxSizeMode.StretchImage
+                else:
+                    selectedTab.Controls[0].SizeMode = PictureBoxSizeMode.AutoSize
+        
 
 Application.EnableVisualStyles()
 Application.Run(MainForm())
