@@ -695,7 +695,7 @@ The Toolbar
 
 .. class:: handout
 
-    Creating images (for the picture boxes or for icons) is very easy. You can instantiate the `Bitmap <>`_ class with a filename, or use a static method on the Image class: `Imgae.FromFile <>`_.
+    Creating images (for the picture boxes or for icons) is very easy. You can instantiate the `Bitmap <http://msdn2.microsoft.com/en-us/library/system.drawing.bitmap.aspx>`_ class with a filename, or use a static method on the Image class: `Image.FromFile <http://msdn2.microsoft.com/en-us/library/system.drawing.image.fromfile.aspx>`_.
 
 
 Other Topics
