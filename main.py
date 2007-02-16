@@ -21,10 +21,11 @@ from System import ArgumentException
 from System.Drawing import Bitmap, Color
 from System.Drawing.Imaging import ImageFormat
 from System.Windows.Forms import (
-    Application, Clipboard, ContextMenuStrip, DataObject, DialogResult,
-    DockStyle, Form, ImageList, MenuStrip,
+    Application, Clipboard, ControlStyles, ContextMenuStrip, 
+    DataObject, DialogResult, DockStyle, 
+    Form, ImageList, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
-    OpenFileDialog, PictureBox, PictureBoxSizeMode,
+    OpenFileDialog, Panel, PictureBox, PictureBoxSizeMode,
     SaveFileDialog, TabControl, TabAlignment,
     TabPage, ToolStrip, ToolStripButton,
     ToolStripMenuItem, ToolStripItemDisplayStyle
@@ -32,6 +33,23 @@ from System.Windows.Forms import (
 from System.IO import Path
 
 FILTER = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
+
+
+class ScrollableImagePanel(Panel):
+
+    def __init__(self, pictureBox):
+        Panel.__init__(self)
+        self.SetStyle(ControlStyles.Selectable, True)
+        self.Dock = DockStyle.Fill
+        self.AutoScroll = True
+        
+        self.image = pictureBox.Image
+        self.sizeMode = pictureBox.SizeMode
+        
+        pictureBox.Parent = self
+        pictureBox.Click += lambda *_: self.Focus()
+        self.Click += lambda *_: self.Focus()
+
 
 class MainForm(Form):
 
@@ -158,10 +176,8 @@ class MainForm(Form):
     def createTab(self, image, label):
         tabPage = TabPage()
         tabPage.Text = label
-        pictureBox = self.getPictureBox(image)
-        tabPage.Dock = DockStyle.Fill
-        tabPage.AutoScroll = True
-        tabPage.Controls.Add(pictureBox)
+        panel = ScrollableImagePanel(self.getPictureBox(image))
+        tabPage.Controls.Add(panel)
 
         self.tabControl.TabPages.Add(tabPage)
         self.tabControl.SelectedTab = tabPage
@@ -235,16 +251,18 @@ class MainForm(Form):
     def onImageMode(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
-            if selectedTab.Controls:
-                currentMode = selectedTab.Controls[0].SizeMode
-                image = selectedTab.Controls[0].Image
+            if len(selectedTab.Controls):
+                currentMode = selectedTab.Controls[0].sizeMode
+                image = selectedTab.Controls[0].image
                 selectedTab.Controls.RemoveAt(0)
                 if currentMode == PictureBoxSizeMode.AutoSize:
-                    selectedTab.Controls.Add(self.getPictureBox(image, 
+                    panel = ScrollableImagePanel(self.getPictureBox(image, 
                                                                 PictureBoxSizeMode.StretchImage))
+                    selectedTab.Controls.Add(panel)
                 else:
-                    selectedTab.Controls.Add(self.getPictureBox(image, 
+                    panel = ScrollableImagePanel(self.getPictureBox(image, 
                                                                 PictureBoxSizeMode.AutoSize))
+                    selectedTab.Controls.Add(panel)
 
 
 Application.EnableVisualStyles()
