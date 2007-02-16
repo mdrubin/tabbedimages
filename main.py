@@ -223,6 +223,8 @@ class MainForm(Form):
                     format = ImageFormat.Jpeg
                     
                 image.Save(fileName, format)
+                
+                selectedTab.Text = Path.GetFileName(fileName)
 
 
     def onAbout(self, _, __):
