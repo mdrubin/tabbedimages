@@ -39,6 +39,9 @@ class ScrollableImagePanel(Panel):
 
     def __init__(self, pictureBox):
         Panel.__init__(self)
+        
+        # This makes the panel selectable, and therefore scrollable
+        # with the mouse wheel
         self.SetStyle(ControlStyles.Selectable, True)
         self.Dock = DockStyle.Fill
         self.AutoScroll = True
