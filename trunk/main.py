@@ -211,17 +211,17 @@ class MainForm(Form):
                 extension = Path.GetExtension(saveFileDialog.FileName)
                 fileName = saveFileDialog.FileName
                 format = ImageFormat.Jpeg
-                if extension.lower() == "bmp":
+                if extension.lower() == ".bmp":
                     format = ImageFormat.Bmp
-                elif extension.lower() == "gif":
+                elif extension.lower() == ".gif":
                     format = ImageFormat.Gif
                 else:
-                    if not (fileName.lower().endswith('jpg')
-                            or fileName.lower().endswith('jpeg')):
+                    # Only run if there *is* an
+                    if extension.lower() != '.jpg':
                         fileName += '.jpg'
                     format = ImageFormat.Jpeg
                     
-                image.Save(saveFileDialog.FileName, format)
+                image.Save(fileName, format)
 
 
     def onAbout(self, _, __):
