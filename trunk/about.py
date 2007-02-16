@@ -4,9 +4,11 @@
 # web:   http://www.voidspace.org.uk/ironpython/
 #
 
+from System.Drawing import Point
 from System.Windows.Forms import (
     Button, DialogResult, DockStyle, Form, FormBorderStyle
 )
+
 
 
 class AboutDialog(Form):
@@ -16,7 +18,7 @@ class AboutDialog(Form):
 
         self.okButton = Button()
         self.okButton.Text = "OK"
-        self.okButton.Dock = DockStyle.Bottom | DockStyle.Right
+        self.okButton.Location = Point(100, 220)
         self.okButton.Parent = self
         self.okButton.Click += self.onOK
 

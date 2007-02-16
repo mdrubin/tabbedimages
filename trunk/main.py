@@ -8,7 +8,7 @@ import clr
 clr.AddReference('System.Drawing')
 clr.AddReference('System.Windows.Forms')
 
-
+import sys
 from about import AboutDialog
 from icons import (
     CloseIcon, CopyIcon,
@@ -44,6 +44,9 @@ class MainForm(Form):
         self.initToolBar()
         self.initMenu()
         self.initContextMenu()
+        
+        for fileName in sys.argv[1:]:
+            self.openFile(fileName)
 
 
     def initTabControl(self):
@@ -83,8 +86,10 @@ class MainForm(Form):
         editMenu = self.createMenuItem('Edit Menu', '&Edit')
         copy =  self.createMenuItem('Copy', '&Copy', self.onCopy)
         paste = self.createMenuItem('Paste', '&Paste', self.onPaste)
+        view = self.createMenuItem('View Mode', '&View Mode', self.onImageMode)
         editMenu.DropDownItems.Add(copy)
         editMenu.DropDownItems.Add(paste)
+        editMenu.DropDownItems.Add(view)
 
         helpMenu = self.createMenuItem('Help Menu', '&Help')
         about =  self.createMenuItem('About', '&About...', self.onAbout)
@@ -140,25 +145,18 @@ class MainForm(Form):
             return None
 
 
-    def getPictureBox1(self, image):
-        return PictureBox(
-            Image = image,
-            SizeMode = PictureBoxSizeMode.AutoSize
-        )
-
-
-    def getPictureBox2(self, image):
-        return PictureBox(
-            Image = image,
-            SizeMode = PictureBoxSizeMode.StretchImage,
-            Dock = DockStyle.Fill
-        )
+    def getPictureBox(self, image, mode=PictureBoxSizeMode.StretchImage):
+        keyWArgs = {'Image': image,
+                    'SizeMode': mode}
+        if mode == PictureBoxSizeMode.StretchImage:
+            keyWArgs['Dock'] = DockStyle.Fill
+        return PictureBox(**keyWArgs)
 
 
     def createTab(self, image, label):
         tabPage = TabPage()
         tabPage.Text = label
-        pictureBox = self.getPictureBox1(image)
+        pictureBox = self.getPictureBox(image)
         tabPage.Dock = DockStyle.Fill
         tabPage.AutoScroll = True
         tabPage.Controls.Add(pictureBox)
@@ -174,9 +172,22 @@ class MainForm(Form):
         )
         if openFileDialog.ShowDialog() == DialogResult.OK:
             for fileName in openFileDialog.FileNames:
-                image = self.getImage(fileName)
-                if image:
-                   self.createTab(image, Path.GetFileName(fileName))
+                self.openFile(fileName)
+                
+    
+    def openFile(self, fileName):
+        h = open('test.txt', 'a')
+        h.write(fileName + '\n')
+        try:
+            import os
+            h.write(str(os.path.isfile(fileName)) + '\n')
+            h.write(os.getcwd() + '\n')
+        except:
+            pass
+        h.close()
+        image = self.getImage(fileName)
+        if image:
+            self.createTab(image, Path.GetFileName(fileName))
 
 
     def onClose(self, _, __):
@@ -207,31 +218,38 @@ class MainForm(Form):
             saveFileDialog.Filter = FILTER
             if saveFileDialog.ShowDialog() == DialogResult.OK:
                 extension = Path.GetExtension(saveFileDialog.FileName)
+                fileName = saveFileDialog.FileName
                 format = ImageFormat.Jpeg
                 if extension.lower() == "bmp":
                     format = ImageFormat.Bmp
-                elif extension.lower() == "jpg":
-                    format = ImageFormat.Jpeg
                 elif extension.lower() == "gif":
                     format = ImageFormat.Gif
+                else:
+                    if not (fileName.lower().endswith('jpg')
+                            or fileName.lower().endswith('jpeg')):
+                        fileName += '.jpg'
+                    format = ImageFormat.Jpeg
+                    
                 image.Save(saveFileDialog.FileName, format)
 
 
     def onAbout(self, _, __):
         AboutDialog().ShowDialog()
+        
+        
     def onImageMode(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
             if selectedTab.Controls:
                 currentMode = selectedTab.Controls[0].SizeMode
                 image = selectedTab.Controls[0].Image
-                selectedTab.Controls.Remove(selectedTab.Controls[0])
+                selectedTab.Controls.RemoveAt(0)
                 if currentMode == PictureBoxSizeMode.AutoSize:
-                    selectedTab.Controls.Add(self.getPictureBox2(image))
+                    selectedTab.Controls.Add(self.getPictureBox(image, 
+                                                                PictureBoxSizeMode.StretchImage))
                 else:
-                    selectedTab.Controls.Add(self.getPictureBox1(image))
-
-
+                    selectedTab.Controls.Add(self.getPictureBox(image, 
+                                                                PictureBoxSizeMode.AutoSize))
 
 
 Application.EnableVisualStyles()
