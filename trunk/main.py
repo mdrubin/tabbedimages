@@ -64,6 +64,7 @@ class MainForm(Form):
         self.initMenu()
         self.initContextMenu()
         
+        self.paths = []
         for fileName in sys.argv[1:]:
             self.openFile(fileName)
 
@@ -173,14 +174,23 @@ class MainForm(Form):
         return PictureBox(**keyWArgs)
 
 
-    def createTab(self, image, label):
+    def createTab(self, image, filePath=None):
+        if filePath is not None:
+            name = Path.GetFileName(filePath)
+            directory = Path.GetDirectoryName(filePath)
+        else:
+            name = "CLIPBOARD"
+            directory = None
+            
         tabPage = TabPage()
-        tabPage.Text = label
+        tabPage.Text = name
         panel = ScrollableImagePanel(self.getPictureBox(image))
         tabPage.Controls.Add(panel)
 
         self.tabControl.TabPages.Add(tabPage)
         self.tabControl.SelectedTab = tabPage
+        
+        self.paths.insert(self.tabControl.SelectedIndex, (name, directory))
 
 
     def onOpen(self, _, __):
@@ -196,13 +206,15 @@ class MainForm(Form):
     def openFile(self, fileName):
         image = self.getImage(fileName)
         if image:
-            self.createTab(image, Path.GetFileName(fileName))
+            self.createTab(image, fileName)
+            
 
 
     def onClose(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
             self.tabControl.TabPages.Remove(selectedTab)
+            del self.paths[self.tabControl.SelectedIndex]
 
 
     def onCopy(self, _, __):
@@ -216,32 +228,37 @@ class MainForm(Form):
     def onPaste(self, _, __):
         dataObject = Clipboard.GetDataObject()
         if dataObject.ContainsImage():
-            self.createTab(dataObject.GetImage(), "CLIPBOARD")
+            self.createTab(dataObject.GetImage())
 
 
     def onSave(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
-            image = selectedTab.Controls[0].Image
+            (name, directory) = self.paths[self.tabControl.SelectedIndex]
+            image = selectedTab.Controls[0].image
             saveFileDialog = SaveFileDialog()
             saveFileDialog.Filter = FILTER
+            if directory is not None:
+                saveFileDialog.InitialDirectory = directory
+                saveFileDialog.FileName = name
+                
             if saveFileDialog.ShowDialog() == DialogResult.OK:
-                extension = Path.GetExtension(saveFileDialog.FileName)
                 fileName = saveFileDialog.FileName
+                extension = Path.GetExtension(fileName)
                 format = ImageFormat.Jpeg
                 if extension.lower() == ".bmp":
                     format = ImageFormat.Bmp
                 elif extension.lower() == ".gif":
                     format = ImageFormat.Gif
                 else:
-                    # Only run if there *is* an
                     if extension.lower() != '.jpg':
                         fileName += '.jpg'
-                    format = ImageFormat.Jpeg
                     
                 image.Save(fileName, format)
                 
-                selectedTab.Text = Path.GetFileName(fileName)
+                name = Path.GetFileName(fileName)
+                selectedTab.Text = name
+                self.paths[self.tabControl.SelectedIndex] = (name, Path.GetDirectoryName(fileName))
 
 
     def onAbout(self, _, __):
