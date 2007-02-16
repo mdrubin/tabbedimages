@@ -212,7 +212,6 @@ class MainForm(Form):
             self.createTab(image, fileName)
             
 
-
     def onClose(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
