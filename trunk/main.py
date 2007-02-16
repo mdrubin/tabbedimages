@@ -87,7 +87,7 @@ class MainForm(Form):
         editMenu = self.createMenuItem('Edit Menu', '&Edit')
         copy =  self.createMenuItem('Copy', '&Copy', self.onCopy)
         paste = self.createMenuItem('Paste', '&Paste', self.onPaste)
-        view = self.createMenuItem('View Mode', '&View Mode', self.onImageMode)
+        view = self.createMenuItem('Image Mode', '&Image Mode', self.onImageMode)
         editMenu.DropDownItems.Add(copy)
         editMenu.DropDownItems.Add(paste)
         editMenu.DropDownItems.Add(view)
@@ -107,6 +107,7 @@ class MainForm(Form):
         contextMenuStrip.Items.Add(self.createMenuItem('Copy', '&Copy', self.onCopy))
         contextMenuStrip.Items.Add(self.createMenuItem('Paste', '&Paste', self.onPaste))
         contextMenuStrip.Items.Add(self.createMenuItem('Close', '&Close', self.onClose))
+        contextMenuStrip.Items.Add(self.createMenuItem('Image Mode', '&Image Mode', self.onImageMode))
         self.tabControl.ContextMenuStrip = contextMenuStrip
 
 
