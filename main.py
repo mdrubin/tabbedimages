@@ -176,15 +176,6 @@ class MainForm(Form):
                 
     
     def openFile(self, fileName):
-        h = open('test.txt', 'a')
-        h.write(fileName + '\n')
-        try:
-            import os
-            h.write(str(os.path.isfile(fileName)) + '\n')
-            h.write(os.getcwd() + '\n')
-        except:
-            pass
-        h.close()
         image = self.getImage(fileName)
         if image:
             self.createTab(image, Path.GetFileName(fileName))

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using IronPython.Hosting;
+using IronPython.Runtime;
 
 namespace TabbedImages {
     
@@ -12,7 +13,9 @@ namespace TabbedImages {
 
             PythonEngine engine = new PythonEngine();
             engine.AddToPath(Path.GetDirectoryName(Application.ExecutablePath));
-            engine.ExecuteFile("main.py");
+            engine.Sys.argv = List.Make(args);
+            string path = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "main.py");
+            engine.ExecuteFile(path);
 
         }
     }
