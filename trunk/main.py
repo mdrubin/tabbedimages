@@ -12,7 +12,8 @@ import sys
 from about import AboutDialog
 from icons import (
     CloseIcon, CopyIcon,
-    OpenIcon, PasteIcon, SaveIcon
+    OpenIcon, PasteIcon,
+    SaveIcon, ViewIcon
 )
 
 from cPickle import loads
@@ -130,7 +131,7 @@ class MainForm(Form):
         addToolBarIcon(CloseIcon, "Close", self.onClose)
         addToolBarIcon(CopyIcon, "Copy", self.onCopy)
         addToolBarIcon(PasteIcon, "Paste", self.onPaste)
-        addToolBarIcon(None, "Image mode", self.onImageMode)
+        addToolBarIcon(ViewIcon, "Image mode", self.onImageMode)
 
         self.Controls.Add(toolBar)
 
