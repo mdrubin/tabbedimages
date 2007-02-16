@@ -8,10 +8,13 @@ import clr
 clr.AddReference('System.Drawing')
 clr.AddReference('System.Windows.Forms')
 
+
+from about import AboutDialog
 from icons import (
     CloseIcon, CopyIcon,
     OpenIcon, PasteIcon, SaveIcon
 )
+
 from cPickle import loads
 from System import ArgumentException
 from System.Drawing import Bitmap, Color
@@ -83,13 +86,18 @@ class MainForm(Form):
         editMenu.DropDownItems.Add(copy)
         editMenu.DropDownItems.Add(paste)
 
+        helpMenu = self.createMenuItem('Help Menu', '&Help')
+        about =  self.createMenuItem('About', '&About...', self.onAbout)
+        helpMenu.DropDownItems.Add(about)
+
         menuStrip.Items.Add(fileMenu)
         menuStrip.Items.Add(editMenu)
+        menuStrip.Items.Add(helpMenu)
         self.Controls.Add(menuStrip)
-        
-        
+
+
     def initContextMenu(self):
-        contextMenuStrip = ContextMenuStrip()        
+        contextMenuStrip = ContextMenuStrip()
         contextMenuStrip.Items.Add(self.createMenuItem('Copy', '&Copy', self.onCopy))
         contextMenuStrip.Items.Add(self.createMenuItem('Paste', '&Paste', self.onPaste))
         contextMenuStrip.Items.Add(self.createMenuItem('Close', '&Close', self.onClose))
@@ -104,8 +112,8 @@ class MainForm(Form):
         def addToolBarIcon(pickledIcon, name, clickHandler):
             button = ToolStripButton()
             if pickledIcon:
-                button.Image = loads(pickledIcon)            
-            button.ImageTransparentColor = Color.Magenta            
+                button.Image = loads(pickledIcon)
+            button.ImageTransparentColor = Color.Magenta
             button.ToolTipText = button.Name = name
             button.DisplayStyle = ToolStripItemDisplayStyle.Image
             if clickHandler:
@@ -209,6 +217,8 @@ class MainForm(Form):
                 image.Save(saveFileDialog.FileName, format)
 
 
+    def onAbout(self, _, __):
+        AboutDialog().ShowDialog()
     def onImageMode(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
@@ -220,7 +230,9 @@ class MainForm(Form):
                     selectedTab.Controls.Add(self.getPictureBox2(image))
                 else:
                     selectedTab.Controls.Add(self.getPictureBox1(image))
-        
+
+
+
 
 Application.EnableVisualStyles()
 Application.Run(MainForm())
