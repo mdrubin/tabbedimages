@@ -54,6 +54,12 @@ class ScrollableImagePanel(Panel):
         self.Click += lambda *_: self.Focus()
 
 
+    def IsInputKey(self, key):
+        if key in (Keys.Left, Keys.Right):
+            return True
+        return False
+
+
 class MainForm(Form):
 
     def __init__(self):
@@ -168,6 +174,29 @@ class MainForm(Form):
         self.Controls.Add(toolBar)
 
 
+    def onKeyDown(self, _, event):
+        if (self.tabControl.SelectedTab is None or
+            len(self.tabControl.TabPages) == 1):
+            return
+        if event.KeyCode == Keys.Right:
+            modifier = 1
+        elif event.KeyCode == Keys.Left:
+            modifier = -1
+        else:
+            return
+        
+        selected = self.tabControl.SelectedIndex
+        selected += modifier
+        if selected == len(self.paths):
+            self.tabControl.SelectedIndex = 0
+        elif selected < 0:
+            self.tabControl.SelectedIndex = len(self.paths) - 1
+        else:
+            self.tabControl.SelectedIndex = selected
+        
+        self.tabControl.SelectedTab.Controls[0].Focus()
+
+
     def getImage(self, fileName):
         try:
             return Bitmap(fileName)
@@ -197,6 +226,7 @@ class MainForm(Form):
         tabPage = TabPage()
         tabPage.Text = name
         panel = ScrollableImagePanel(self.getPictureBox(image))
+        panel.KeyDown += self.onKeyDown
         tabPage.Controls.Add(panel)
 
         self.tabControl.TabPages.Add(tabPage)
@@ -284,13 +314,13 @@ class MainForm(Form):
                 image = selectedTab.Controls[0].image
                 selectedTab.Controls.RemoveAt(0)
                 if currentMode == PictureBoxSizeMode.AutoSize:
-                    panel = ScrollableImagePanel(self.getPictureBox(image, 
-                                                                PictureBoxSizeMode.StretchImage))
-                    selectedTab.Controls.Add(panel)
+                    mode = PictureBoxSizeMode.StretchImage
                 else:
-                    panel = ScrollableImagePanel(self.getPictureBox(image, 
-                                                                PictureBoxSizeMode.AutoSize))
-                    selectedTab.Controls.Add(panel)
+                    mode = PictureBoxSizeMode.AutoSize
+                
+                panel = ScrollableImagePanel(self.getPictureBox(image, mode))
+                panel.KeyDown += self.onKeyDown                    
+                selectedTab.Controls.Add(panel)
 
 
 Application.EnableVisualStyles()
