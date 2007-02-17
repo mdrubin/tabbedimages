@@ -23,7 +23,7 @@ from System.Drawing.Imaging import ImageFormat
 from System.Windows.Forms import (
     Application, Clipboard, ControlStyles, ContextMenuStrip, 
     DataObject, DialogResult, DockStyle, 
-    Form, ImageList, MenuStrip,
+    Form, ImageList, Keys, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, Panel, PictureBox, PictureBoxSizeMode,
     SaveFileDialog, TabControl, TabAlignment,
@@ -80,11 +80,13 @@ class MainForm(Form):
         self.Controls.Add(self.tabControl)
 
 
-    def createMenuItem(self, name, text, clickHandler=None):
+    def createMenuItem(self, name, text, clickHandler=None, keys=None):
         menuItem = ToolStripMenuItem(
             Name = name,
             Text = text
         )
+        if keys:
+            menuItem.ShortcutKeys = keys
         if clickHandler:
             menuItem.Click += clickHandler
         return menuItem
@@ -96,10 +98,14 @@ class MainForm(Form):
             Dock = DockStyle.Top
         )
         fileMenu      = self.createMenuItem('File Menu', '&File')
-        openMenuItem  = self.createMenuItem('Open', '&Open...', self.onOpen)
-        saveMenuItem  = self.createMenuItem('Save', '&Save...', self.onSave)
-        closeMenuItem = self.createMenuItem('Close', '&Close', self.onClose)
-        exitMenuItem  = self.createMenuItem('Exit', 'E&xit', lambda *_: Application.Exit())
+        openMenuItem  = self.createMenuItem('Open', '&Open...', self.onOpen, 
+                                            keys=(Keys.Control | Keys.O))
+        saveMenuItem  = self.createMenuItem('Save', '&Save...', self.onSave,
+                                            keys=(Keys.Control | Keys.S))
+        closeMenuItem = self.createMenuItem('Close', '&Close', self.onClose,
+                                            keys=(Keys.Control | Keys.W))
+        exitMenuItem  = self.createMenuItem('Exit', 'E&xit', lambda *_: Application.Exit(),
+                                            keys=(Keys.Control | Keys.X))
 
         fileMenu.DropDownItems.Add(openMenuItem)
         fileMenu.DropDownItems.Add(saveMenuItem)
@@ -107,9 +113,12 @@ class MainForm(Form):
         fileMenu.DropDownItems.Add(exitMenuItem)
 
         editMenu = self.createMenuItem('Edit Menu', '&Edit')
-        copy =  self.createMenuItem('Copy', '&Copy', self.onCopy)
-        paste = self.createMenuItem('Paste', '&Paste', self.onPaste)
-        view = self.createMenuItem('Image Mode', '&Image Mode', self.onImageMode)
+        copy =  self.createMenuItem('Copy', '&Copy', self.onCopy,
+                                    keys=(Keys.Control | Keys.C))
+        paste = self.createMenuItem('Paste', '&Paste', self.onPaste,
+                                    keys=(Keys.Control | Keys.V))
+        view = self.createMenuItem('Image Mode', '&Image Mode', self.onImageMode,
+                                   keys=(Keys.Control | Keys.I))
         editMenu.DropDownItems.Add(copy)
         editMenu.DropDownItems.Add(paste)
         editMenu.DropDownItems.Add(view)
