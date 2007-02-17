@@ -13,13 +13,13 @@ namespace TabbedImages {
         [STAThread]
         static void Main(string[] rawArgs) {
             List<string> args = new List<string>(rawArgs);
+            args.Insert(0, Application.ExecutablePath);
 
             PythonEngine engine = new PythonEngine();
             engine.AddToPath(Path.GetDirectoryName(Application.ExecutablePath));
             engine.Sys.argv = List.Make(args);
 
-            EngineModule engineModule = engine.CreateModule("__main__", 
-                new System.Collections.Generic.Dictionary<string, object>(), true);
+            EngineModule engineModule = engine.CreateModule("__main__",  new Dictionary<string, object>(), true);
             engine.DefaultModule = engineModule;
             
             string path = Path.Combine(
