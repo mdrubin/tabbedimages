@@ -223,7 +223,7 @@ class MainForm(Form):
         dataObject = DataObject()
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
-            dataObject.SetImage(selectedTab.Controls[0].Image)
+            dataObject.SetImage(selectedTab.Controls[0].image)
             Clipboard.SetDataObject(dataObject)
 
 
