@@ -33,8 +33,18 @@ from System.Windows.Forms import (
 )
 
 
-FILTER = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
+FILTER = ("Images (*.JPG;*.BMP;*.GIF;*.PNG;*.TIF;*.ICO)|"
+          "*.JPG;*.BMP;*.GIF;*.PNG;*.TIF;*.ICO|"
+          "All files (*.*)|*.*")
 IMAGEPATH = Path.Combine(Path.GetDirectoryName(sys.argv[0]), "images")
+IMAGEFORMATS = {'.jpg': ImageFormat.Jpeg,
+                '.jpeg': ImageFormat.Jpeg,
+                '.bmp': ImageFormat.Bmp,
+                '.gif': ImageFormat.Gif,
+                '.png': ImageFormat.Png,
+                '.tif': ImageFormat.Tiff,
+                '.ico': ImageFormat.Icon
+                }
 
 class ScrollableImagePanel(Panel):
 
@@ -288,14 +298,10 @@ class MainForm(Form):
             if saveFileDialog.ShowDialog() == DialogResult.OK:
                 fileName = saveFileDialog.FileName
                 extension = Path.GetExtension(fileName)
-                format = ImageFormat.Jpeg
-                if extension.lower() == ".bmp":
-                    format = ImageFormat.Bmp
-                elif extension.lower() == ".gif":
-                    format = ImageFormat.Gif
-                else:
-                    if extension.lower() != '.jpg':
-                        fileName += '.jpg'
+                format = IMAGEFORMATS.get(extension.lower())
+                if format is None:
+                    format = ImageFormat.Jpeg
+                    fileName += '.jpg'
 
                 image.Save(fileName, format)
 
