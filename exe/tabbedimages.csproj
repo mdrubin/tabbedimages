@@ -12,6 +12,7 @@
     <AssemblyName>tabbedimages</AssemblyName>
     <StartupObject>
     </StartupObject>
+    <ApplicationIcon>pictures.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,5 +53,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="pictures.ico" />
   </ItemGroup>
 </Project>
