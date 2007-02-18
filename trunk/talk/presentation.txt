@@ -95,7 +95,6 @@ What is IronPython?
 
 * Written in C# for the .NET framework
 
-
 .. class:: incremental
 
 * Also runs on Mono
@@ -137,9 +136,9 @@ Why Use IronPython?
 
     If you don't need .NET you don't want IronPython. (Probably!) {sm;:-)} IronPython is at its best for .NET programmers.
 
-    According to the `Computer Language Shootout <http://shootout.alioth.debian.org>`_ IronPython is generally a bit slower than CPython.
-
     For .NET programmers, Python is nicer than C#. It is also a ready made scripting language for embedding in applications.
+
+.. class:: incremental
 
 * Use multi-core processors
 
@@ -167,6 +166,66 @@ Why Use IronPython?
 .. class:: handout
 
     Third party components includes a huge range of sophisticated GUI components. Due to the Windows culture you usually have to pay for them! However we use a couple of big components in Resolver, and at least one of them (I'm pretty sure) wouldn't have an equivalent for any CPython GUI library.
+
+
+Why Not Use IronPython?
+=======================
+
+.. class:: incremental 
+
+* Speed and startup time
+
+.. class:: handout
+
+    IronPython runs the *PyStone* benchmark about thirty percent faster than CPython. *However*, according to the `Computer Language Shootout <http://shootout.alioth.debian.org>`_ (a better benchmark - but there is no such thing as a perfect benchmark) IronPython is generally a bit slower than CPython.
+    
+    We have however seen interesting, and unexplained, speedups from time to time. IronPython does take advantage of the JIT compiler which is the likely cause of this.
+    
+    Compiling Python code to assemblies is an intensive task, which can make startup times long for large programs. You can now pre-compile to assemblies to speed this up.
+
+.. class:: incremental 
+
+* Non-availability of C extensions
+
+.. class:: handout
+
+    IronPython has no C-API. There are alternative implementations 9and wrappers) of many C extensiosn from the standard library, but not for all of them.
+
+.. class:: incremental 
+
+* Occasional bugs
+
+.. class:: handout
+
+    Resolver started developing with IronPython around October 2005. At that point it was almost a daily occurence to discover bugs in IronPython, create a bugtest to tell us when it was fixed and then implement a workaround.
+    
+    Now this happens very rarely. We recently discovered a bug in ``__call__`` and keyword arguments, I don't remember the last time we discovered a bug prior to that.
+
+.. class:: incremental
+
+* Reliance on the .NET framework redistributable
+
+.. class:: handout
+
+    There isn't an awful lot of difference between being dependent on Python and being dependent on .NET though. Also see the note that goes with `Setting Up IronPython`_.
+
+.. class:: incremental
+
+* A mainly Windows platform
+
+.. class:: handout
+
+    Mono is good, *but* (for example) it doesn't have all of Windows Forms 2.0 implemented.
+
+.. class:: incremental
+
+* Can't use .NET attributes from IronPython
+
+.. class:: handout
+
+    Which is a reason to use another .NET language. We've had to do this in Resolver to use unmanaged code from IronPython. Similarly you can't create IronPython classes which can be consumed from another .NET language.
+    
+    It may be possible to solve both these problems using the ``System.Reflection`` API to dynamically emit .NET classes, but no-one has shown this working from IronPython yet.
 
 
 Setting Up IronPython
@@ -348,8 +407,8 @@ Therefore, the *most trivial Windows Forms application possible* in IronPython:
     This starts the message loop and makes the form visible, with all the default event handlers in place. The only one with any relevance for us is the one that handles the *Form Closing* event. This calls ``Application.Exit()``, disposes of the form and shuts down the message loop.
 
 
-Setting Attributes
-==================
+Configuring .NET Classes
+========================
 
 .. class:: incremental small
 
@@ -370,7 +429,7 @@ Setting Attributes
 
 .. class:: handout
 
-  The C# example of this on `Text proeprty docs <http://msdn2.microsoft.com/en-us/library/system.windows.forms.form.text.aspx>`_ says: ``public override string Text { get; set; }``. Meaning that it is a public property, that can be both fetched and set, and it takes (or returns) a string. (And that on the form, the ``Text`` property overrides the one inherited from ``Control``.)
+  The C# example of this on `Text property docs <http://msdn2.microsoft.com/en-us/library/system.windows.forms.form.text.aspx>`_ says: ``public override string Text { get; set; }``. Meaning that it is a public property, that can be both fetched and set, and it takes (or returns) a string. (And that on the form, the ``Text`` property overrides the one inherited from ``Control``.)
   
 .. class:: incremental
 
@@ -413,9 +472,11 @@ Adding Controls
 
 .. class:: handout
 
-    And they are enumerable.
+    Specifically a ``ControlColelction``. They are enumerable and indexable and you can use ``len`` and ``in`` on it (to get the number of controls and check for membership respectively).
     
     Instead of using ``Controls.Add`` we *could* have done ``button.Parent = form``, which would have added the button to the form's controls collection for us.
+    
+    The ``ControlCollection`` class has useful methods like ``Remove(control)`` and ``RemoveAt(index)``.
     
 .. class:: incremental
 
@@ -496,6 +557,9 @@ Subclassing Controls
         def __init__(self):
             Form.__init__(self)
             self.Text = "Hello World"
+            self.Icon = Icon(Path.Combine(IMAGEPATH, "pictures.ico"))
+            self.Width = 350
+            self.Height = 200
     
     form = MainForm()
     Application.Run(form)
@@ -508,6 +572,8 @@ Subclassing Controls
     For example if you want to make a `Panel <http://msdn2.microsoft.com/en-us/library/system.windows.forms.panel_members.aspx>`_ selectable you need to call
     ``panel.SetStyle(ControlStyles.Selectable, True)``. This is a protected method and
     can only be called from a subclass.
+    
+    The ``Icon`` class is from ``System.Drawing``. ``Path`` is from ``System.IO``.
 
 
 The Multi-Tabbed Image Viewer
@@ -524,6 +590,37 @@ The Multi-Tabbed Image Viewer
 .. class:: incremental
 
 * Illustrates more advanced aspects of Windows Forms
+
+.. class:: handout
+
+    A small application to illustrate various Windows Forms controls, including a custom executable that embeds the IronPython engine. It is about 15k or so of Python code, and is all presentation layer (very little logic) !
+
+    Despite being a small application it imports 26 names from ``System.Windows.Forms`` ! .NET tends to use enumerations and structures for configuration, where Python would use strings or constants. (Enumerations are really just constants formalised in a class.)
+
+Screenshot
+==========
+
+.. image:: images/tabbed_image_viewer.jpg
+    :align: center
+    :width: 454
+    :height: 377
+    :alt: The Multi Tabbed Image Viewer
+    :target: http://code.google.com/p/tabbedimages/
+
+
+Screenshot on Mono
+==================
+
+.. image:: images/mono.jpg
+    :align: center
+    :width: 657
+    :height: 404
+    :alt: The Multi Tabbed Image Viewer on Mono
+    :target: http://code.google.com/p/tabbedimages/
+
+.. class:: handout
+
+    Works ok on Mono. Is case sensitive on the filesystem (which windows generally isn't) and doesn't refresh the GUI when you delete a tab. 
 
 
 Initialising with a TabControl
@@ -648,19 +745,39 @@ The Menu
     fileMenu  = ToolStripMenuItem(Name="File Menu", Text='&File')
     openMenuItem  = ToolStripMenuItem(Name="Open", Text='&Open...')
     openMenuItem.Click += self.onOpen
+    openMenuItem.ShortcutKeys = Keys.Control | Keys.O
     
     fileMenu.DropDownItems.Add(openMenuItem)
     menuStrip.Items.Add(fileMenu)
     self.Controls.Add(menuStrip)
     {-coloring}
 
-.. class:: incremental
+.. class:: incremental small
 
 * ``MenuStrip`` is the top level menu bar
 
-.. class:: incremental
+.. class:: incremental small
 
 * ``ToolStripMenuItem`` can either be sub menus (using ``DropDownItems``) or menu items with ``Click`` handlers.
+
+
+Context Menu
+============
+
+.. class:: incremental
+
+* Instead of a ``MenuStrip``, context menus uses ``ContextMenuStrip``
+
+.. class:: incremental
+
+* You can then add items using ``ToolStripMenuItem`` in the same way as for a ``MenuStrip``
+
+.. image:: images/context_menu.jpg
+    :class: incremental
+    :align: center
+    :width: 350
+    :height: 200
+    :alt: IronPython: Context Menu
 
 
 The Toolbar
@@ -698,18 +815,29 @@ The Toolbar
     Creating images (for the picture boxes or for icons) is very easy. You can instantiate the `Bitmap <http://msdn2.microsoft.com/en-us/library/system.drawing.bitmap.aspx>`_ class with a filename, or use a static method on the Image class: `Image.FromFile <http://msdn2.microsoft.com/en-us/library/system.drawing.image.fromfile.aspx>`_.
 
 
-Other Topics
-============
+The System Message Box
+======================
 
-Other controls used in the application include :
+.. class:: incremental small
 
-* System message box
-* Context menu
-* Clipboard
-* Screenshot
-* Pickle from `fepy <http://fepy.sourceforge.net>`_ to load pickled ``Bitmap`` objects
+.. raw:: html
+    
+    {+coloring} 
+    try:
+        return Bitmap(fileName)
+    except ArgumentException:
+        MessageBox.Show(fileName + " doesn't appear to be a valid image file",
+                        "Invalid image format",
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Exclamation)
+    {-coloring}
 
-* Screenshots from Mono
+.. image:: images/messagebox.jpg
+    :class: incremental
+    :align: center
+    :width: 465
+    :height: 126
+    :alt: The System Message Box
 
 
 Further Topics
