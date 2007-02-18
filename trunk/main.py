@@ -18,11 +18,12 @@ from icons import (
 
 from cPickle import loads
 from System import ArgumentException
-from System.Drawing import Bitmap, Color
+from System.Drawing import Bitmap, Color, Icon
 from System.Drawing.Imaging import ImageFormat
+from System.IO import Path
 from System.Windows.Forms import (
-    Application, Clipboard, ControlStyles, ContextMenuStrip, 
-    DataObject, DialogResult, DockStyle, 
+    Application, Clipboard, ControlStyles, ContextMenuStrip,
+    DataObject, DialogResult, DockStyle,
     Form, ImageList, Keys, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, Panel, PictureBox, PictureBoxSizeMode,
@@ -30,25 +31,24 @@ from System.Windows.Forms import (
     TabPage, ToolStrip, ToolStripButton,
     ToolStripMenuItem, ToolStripItemDisplayStyle
 )
-from System.IO import Path
 
 FILTER = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
-
+IMAGEPATH = Path.Combine(Path.GetDirectoryName(sys.argv[0]), "images")
 
 class ScrollableImagePanel(Panel):
 
     def __init__(self, pictureBox):
         Panel.__init__(self)
-        
+
         # This makes the panel selectable, and therefore scrollable
         # with the mouse wheel
         self.SetStyle(ControlStyles.Selectable, True)
         self.Dock = DockStyle.Fill
         self.AutoScroll = True
-        
+
         self.image = pictureBox.Image
         self.sizeMode = pictureBox.SizeMode
-        
+
         pictureBox.Parent = self
         pictureBox.Click += lambda *_: self.Focus()
         self.Click += lambda *_: self.Focus()
@@ -67,12 +67,13 @@ class MainForm(Form):
         self.Text = 'Tabbed Image Viewer'
         self.Width = 350
         self.Height = 200
+        self.Icon = Icon(Path.Combine(IMAGEPATH, "pictures.ico"))
 
         self.initTabControl()
         self.initToolBar()
         self.initMenu()
         self.initContextMenu()
-        
+
         self.paths = []
         for fileName in sys.argv[1:]:
             self.openFile(fileName)
@@ -104,7 +105,7 @@ class MainForm(Form):
             Dock = DockStyle.Top
         )
         fileMenu      = self.createMenuItem('File Menu', '&File')
-        openMenuItem  = self.createMenuItem('Open', '&Open...', self.onOpen, 
+        openMenuItem  = self.createMenuItem('Open', '&Open...', self.onOpen,
                                             keys=(Keys.Control | Keys.O))
         saveMenuItem  = self.createMenuItem('Save', '&Save...', self.onSave,
                                             keys=(Keys.Control | Keys.S))
@@ -184,7 +185,7 @@ class MainForm(Form):
             modifier = -1
         else:
             return
-        
+
         selected = self.tabControl.SelectedIndex
         selected += modifier
         if selected == len(self.paths):
@@ -193,7 +194,7 @@ class MainForm(Form):
             self.tabControl.SelectedIndex = len(self.paths) - 1
         else:
             self.tabControl.SelectedIndex = selected
-        
+
         self.tabControl.SelectedTab.Controls[0].Focus()
 
 
@@ -222,7 +223,7 @@ class MainForm(Form):
         else:
             name = "CLIPBOARD"
             directory = None
-            
+
         tabPage = TabPage()
         tabPage.Text = name
         panel = ScrollableImagePanel(self.getPictureBox(image))
@@ -231,7 +232,7 @@ class MainForm(Form):
 
         self.tabControl.TabPages.Add(tabPage)
         self.tabControl.SelectedTab = tabPage
-        
+
         self.paths.insert(self.tabControl.SelectedIndex, (name, directory))
 
 
@@ -243,13 +244,13 @@ class MainForm(Form):
         if openFileDialog.ShowDialog() == DialogResult.OK:
             for fileName in openFileDialog.FileNames:
                 self.openFile(fileName)
-                
-    
+
+
     def openFile(self, fileName):
         image = self.getImage(fileName)
         if image:
             self.createTab(image, fileName)
-            
+
 
     def onClose(self, _, __):
         selectedTab = self.tabControl.SelectedTab
@@ -282,7 +283,7 @@ class MainForm(Form):
             if directory is not None:
                 saveFileDialog.InitialDirectory = directory
                 saveFileDialog.FileName = name
-                
+
             if saveFileDialog.ShowDialog() == DialogResult.OK:
                 fileName = saveFileDialog.FileName
                 extension = Path.GetExtension(fileName)
@@ -294,9 +295,9 @@ class MainForm(Form):
                 else:
                     if extension.lower() != '.jpg':
                         fileName += '.jpg'
-                    
+
                 image.Save(fileName, format)
-                
+
                 name = Path.GetFileName(fileName)
                 selectedTab.Text = name
                 self.paths[self.tabControl.SelectedIndex] = (name, Path.GetDirectoryName(fileName))
@@ -304,8 +305,8 @@ class MainForm(Form):
 
     def onAbout(self, _, __):
         AboutDialog().ShowDialog()
-        
-        
+
+
     def onImageMode(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
@@ -317,9 +318,9 @@ class MainForm(Form):
                     mode = PictureBoxSizeMode.StretchImage
                 else:
                     mode = PictureBoxSizeMode.AutoSize
-                
+
                 panel = ScrollableImagePanel(self.getPictureBox(image, mode))
-                panel.KeyDown += self.onKeyDown                    
+                panel.KeyDown += self.onKeyDown
                 selectedTab.Controls.Add(panel)
 
 
