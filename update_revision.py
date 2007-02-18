@@ -4,7 +4,7 @@ from System import DateTime
 from System.Diagnostics import Process
 
 date = DateTime.Now.ToString().split()[0]
-contents = '__revision__ = "Build %s.    %s"\n'
+contents = '__revision__ = "Build %s    %s"\n'
 
 p = Process()
 p.StartInfo.UseShellExecute = False
