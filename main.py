@@ -304,8 +304,13 @@ class MainForm(Form):
                     format = ImageFormat.Jpeg
                     fileName += '.jpg'
 
-                image.Save(fileName, format)
-
+                try:
+                    image.Save(fileName, format)
+                except Exception, e:
+                    MessageBox.Show("Problem Saving %s.\r\nError: %s" % (fileName, str(e)),
+                                    "Problem Saving File",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error)
+                
                 name = Path.GetFileName(fileName)
                 selectedTab.Text = name
                 self.paths[self.tabControl.SelectedIndex] = (name, Path.GetDirectoryName(fileName))
