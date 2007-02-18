@@ -600,10 +600,14 @@ The Multi-Tabbed Image Viewer
 Screenshot
 ==========
 
+.. class:: small
+
+The multi-tabbed image viewer. {sm;:-)}
+
 .. image:: images/tabbed_image_viewer.jpg
     :align: center
-    :width: 454
-    :height: 377
+    :width: 422
+    :height: 299
     :alt: The Multi Tabbed Image Viewer
     :target: http://code.google.com/p/tabbedimages/
 
@@ -611,16 +615,20 @@ Screenshot
 Screenshot on Mono
 ==================
 
+.. class:: small
+
+The multi-tabbed image viewer on Mono 1.2.3 on Windows. 
+
 .. image:: images/mono.jpg
     :align: center
-    :width: 657
-    :height: 404
+    :width: 399
+    :height: 265
     :alt: The Multi Tabbed Image Viewer on Mono
     :target: http://code.google.com/p/tabbedimages/
 
 .. class:: handout
 
-    Works ok on Mono. Is case sensitive on the filesystem (which windows generally isn't) and doesn't refresh the GUI when you delete a tab. 
+    Works ok, but not fully, on Mono. Mono treats the filesystem in a case sensitive way (which windows generally doesn't) and the GUI doesn't refresh when you delete a tab. The about dialog is also a bit scrambled.
 
 
 Initialising with a TabControl
