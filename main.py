@@ -32,6 +32,7 @@ from System.Windows.Forms import (
     ToolStripMenuItem, ToolStripItemDisplayStyle
 )
 
+
 FILTER = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
 IMAGEPATH = Path.Combine(Path.GetDirectoryName(sys.argv[0]), "images")
 
@@ -304,7 +305,7 @@ class MainForm(Form):
 
 
     def onAbout(self, _, __):
-        AboutDialog().ShowDialog()
+        AboutDialog(IMAGEPATH).ShowDialog()
 
 
     def onImageMode(self, _, __):
