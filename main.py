@@ -46,6 +46,7 @@ IMAGEFORMATS = {'.jpg': ImageFormat.Jpeg,
                 '.ico': ImageFormat.Icon
                 }
 
+
 class ScrollableImagePanel(Panel):
 
     def __init__(self, pictureBox):
