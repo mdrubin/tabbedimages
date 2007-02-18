@@ -1,8 +1,10 @@
 # creates revision.py with the output of svnversion
 
+from System import DateTime
 from System.Diagnostics import Process
 
-contents = '__revision__ = "%s"\n'
+date = DateTime.Now.ToString().split()[0]
+contents = '__revision__ = "Build %s.    %s"\n'
 
 p = Process()
 p.StartInfo.UseShellExecute = False
@@ -13,6 +15,6 @@ p.WaitForExit()
 revision = p.StandardOutput.ReadToEnd()
 
 output = open("revision.py", "w")
-output.write(contents % revision.strip())
+output.write(contents % (revision.strip(), date))
 output.close()
 
