@@ -132,7 +132,8 @@ class MainForm(Form):
 
     
     def Dispose(self, disposing):
-        SetClipboardViewer.ChangeClipboardChain(self.Handle, self._clipboardViewerNext)
+        if SetClipboardViewer is not None:
+            SetClipboardViewer.ChangeClipboardChain(self.Handle, self._clipboardViewerNext)
         Form.Dispose(self, disposing)
        
        
@@ -354,7 +355,7 @@ class MainForm(Form):
         dataObject = Clipboard.GetDataObject()
         if dataObject.ContainsImage():
             self.createTab(dataObject.GetImage())
-        self.updateToolbar()
+            self.updateToolbar()
 
 
     def onSave(self, _, __):
