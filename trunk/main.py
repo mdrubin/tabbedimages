@@ -44,7 +44,7 @@ else:
 FILTER = ("Images (*.JPG;*.BMP;*.GIF;*.PNG;*.TIF;*.ICO)|"
           "*.JPG;*.BMP;*.GIF;*.PNG;*.TIF;*.ICO|"
           "All files (*.*)|*.*")
-IMAGEPATH = Path.Combine(Path.GetDirectoryName(sys.argv[0]), "images")
+IMAGEPATH = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(sys.argv[0]), "images"))
 IMAGEFORMATS = {'.jpg': ImageFormat.Jpeg,
                 '.jpeg': ImageFormat.Jpeg,
                 '.bmp': ImageFormat.Bmp,
