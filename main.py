@@ -95,10 +95,10 @@ class MainForm(Form):
         self.initMenu()
         self.initContextMenu()
         
+        self.paths = []
         if SetClipboardViewer is not None:
             self._clipboardViewerNext = SetClipboardViewer.SetClipboardViewer(self.Handle)
 
-        self.paths = []
         for fileName in sys.argv[1:]:
             self.openFile(fileName)
 
