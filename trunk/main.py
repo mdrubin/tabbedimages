@@ -90,17 +90,21 @@ class MainForm(Form):
         self.Height = 200
         self.Icon = Icon(Path.Combine(IMAGEPATH, "pictures.ico"))
 
+        self.justCopied = False
+        self.paths = []
+        
         self.initTabControl()
         self.initToolBar()
         self.initMenu()
         self.initContextMenu()
         
-        self.paths = []
         if SetClipboardViewer is not None:
             self._clipboardViewerNext = SetClipboardViewer.SetClipboardViewer(self.Handle)
 
         for fileName in sys.argv[1:]:
             self.openFile(fileName)
+
+        self.updateToolbar()
 
 
     def WndProc(self, message):
@@ -115,6 +119,7 @@ class MainForm(Form):
             Alignment = TabAlignment.Bottom
         )
         self.Controls.Add(self.tabControl)
+        self.tabControl.SelectedIndexChanged += self.onSelectedIndexChanged
 
 
     def createMenuItem(self, name, text, clickHandler=None, keys=None):
@@ -180,6 +185,8 @@ class MainForm(Form):
 
 
     def initToolBar(self):
+        self.activeWithImages = []
+        
         self.toolBar = ToolStrip(
             Dock = DockStyle.Top
         )
@@ -196,13 +203,22 @@ class MainForm(Form):
             if checkOnClick:
                 button.CheckOnClick = True
             self.toolBar.Items.Add(button)
+            return button
 
         addToolBarIcon(OpenIcon, "Open", self.onOpen)
-        addToolBarIcon(SaveIcon, "Save", self.onSave)
-        addToolBarIcon(CloseIcon, "Close", self.onClose)
-        addToolBarIcon(CopyIcon, "Copy", self.onCopy)
+        save = addToolBarIcon(SaveIcon, "Save", self.onSave)
+        self.activeWithImages.append(save)
+        
+        close = addToolBarIcon(CloseIcon, "Close", self.onClose)
+        self.activeWithImages.append(close)
+        
+        copy = addToolBarIcon(CopyIcon, "Copy", self.onCopy)
+        self.activeWithImages.append(copy)
+        
         addToolBarIcon(PasteIcon, "Paste", self.onPaste)
-        addToolBarIcon(ViewIcon, "Image mode", self.onImageMode, True)
+        mode = addToolBarIcon(ViewIcon, "Image mode", self.onImageMode, True)
+        self.activeWithImages.append(mode)
+        self.imageModeButton = mode
 
         self.Controls.Add(self.toolBar)
 
@@ -228,6 +244,12 @@ class MainForm(Form):
             self.tabControl.SelectedIndex = selected
 
         self.tabControl.SelectedTab.Controls[0].Focus()
+
+
+    def onSelectedIndexChanged(self, _, __):
+        selectedTab = self.tabControl.SelectedTab
+        if selectedTab is not None:
+            self.imageModeButton.Checked = selectedTab.Controls[0].sizeMode == PictureBoxSizeMode.StretchImage
 
 
     def getImage(self, fileName):
@@ -276,6 +298,7 @@ class MainForm(Form):
         if openFileDialog.ShowDialog() == DialogResult.OK:
             for fileName in openFileDialog.FileNames:
                 self.openFile(fileName)
+        self.updateToolbar()
 
 
     def openFile(self, fileName):
@@ -289,9 +312,11 @@ class MainForm(Form):
         if selectedTab:
             self.tabControl.TabPages.Remove(selectedTab)
             del self.paths[self.tabControl.SelectedIndex]
+        self.updateToolbar()
 
 
     def onCopy(self, _, __):
+        self.justCopied = True
         dataObject = DataObject()
         selectedTab = self.tabControl.SelectedTab
         if selectedTab:
@@ -300,9 +325,13 @@ class MainForm(Form):
 
 
     def onPaste(self, _, __):
+        if self.justCopied:
+            self.justCopied = False
+            return
         dataObject = Clipboard.GetDataObject()
         if dataObject.ContainsImage():
             self.createTab(dataObject.GetImage())
+        self.updateToolbar()
 
 
     def onSave(self, _, __):
@@ -343,8 +372,7 @@ class MainForm(Form):
     def onImageMode(self, _, __):
         selectedTab = self.tabControl.SelectedTab
         if not selectedTab:
-            # can't use negative indices on .NET collections
-            self.toolBar.Items[len(self.toolBar.Items) - 1].Checked = False
+            self.imageModeButton.Checked = False
         else:
             if len(selectedTab.Controls):
                 currentMode = selectedTab.Controls[0].sizeMode
@@ -358,6 +386,14 @@ class MainForm(Form):
                 panel = ScrollableImagePanel(self.getPictureBox(image, mode))
                 panel.KeyDown += self.onKeyDown
                 selectedTab.Controls.Add(panel)
+
+
+    def updateToolbar(self):
+        enableState = False
+        if len(self.tabControl.TabPages):
+            enableState = True
+        for item in self.activeWithImages:
+            item.Enabled = enableState
 
 
 Application.EnableVisualStyles()
