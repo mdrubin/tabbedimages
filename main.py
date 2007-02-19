@@ -54,6 +54,7 @@ IMAGEFORMATS = {'.jpg': ImageFormat.Jpeg,
                 '.ico': ImageFormat.Icon
                 }
 CLIPBOARD_DRAW = 0x0308
+WM_CHANGECBCHAIN = 0x030D
 
 
 class ScrollableImagePanel(Panel):
@@ -98,6 +99,7 @@ class MainForm(Form):
         self.initMenu()
         self.initContextMenu()
         
+        self._clipboardViewerNext = None
         if SetClipboardViewer is not None:
             self._clipboardViewerNext = SetClipboardViewer.SetClipboardViewer(self.Handle)
 
@@ -107,10 +109,31 @@ class MainForm(Form):
         self.updateToolbar()
 
 
-    def WndProc(self, message):
-       if message.Value.Msg == CLIPBOARD_DRAW:
-           self.onPaste(None, None)
-       Form.WndProc(self, message)
+    def WndProc(self, msg):
+        if self._clipboardViewerNext is None:
+            return Form.WndProc(self, msg)
+        message = msg.Value
+        if message.Msg == CLIPBOARD_DRAW:
+            self.onPaste(None, None)
+            SetClipboardViewer.SendMessage(self._clipboardViewerNext, 
+                                           message.Msg, 
+                                           message.WParam,
+                                           message.LParam)
+        elif message.Msg == WM_CHANGECBCHAIN:
+            if message.WParam == self._clipboardViewerNext:
+                self._clipboardViewerNext = message.LParam
+            else:
+                SetClipboardViewer.SendMessage(self._clipboardViewerNext, 
+                                               message.Msg, 
+                                               message.WParam,
+                                               message.LParam)
+        else:
+            Form.WndProc(self, msg)
+
+    
+    def Dispose(self, disposing):
+        SetClipboardViewer.ChangeClipboardChain(self.Handle, self._clipboardViewerNext)
+        Form.Dispose(self, disposing)
        
        
     def initTabControl(self):
