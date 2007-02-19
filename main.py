@@ -33,6 +33,14 @@ from System.Windows.Forms import (
 )
 
 
+try:
+    clr.AddReference('Clipboard.dll')
+except IOError:
+    SetClipboardViewer = None
+else:
+    from Clipboard import Clipboard as SetClipboardViewer
+
+
 FILTER = ("Images (*.JPG;*.BMP;*.GIF;*.PNG;*.TIF;*.ICO)|"
           "*.JPG;*.BMP;*.GIF;*.PNG;*.TIF;*.ICO|"
           "All files (*.*)|*.*")
@@ -45,6 +53,7 @@ IMAGEFORMATS = {'.jpg': ImageFormat.Jpeg,
                 '.tif': ImageFormat.Tiff,
                 '.ico': ImageFormat.Icon
                 }
+CLIPBOARD_DRAW = 0x0308
 
 
 class ScrollableImagePanel(Panel):
@@ -85,12 +94,21 @@ class MainForm(Form):
         self.initToolBar()
         self.initMenu()
         self.initContextMenu()
+        
+        if SetClipboardViewer is not None:
+            self._clipboardViewerNext = SetClipboardViewer.SetClipboardViewer(self.Handle)
 
         self.paths = []
         for fileName in sys.argv[1:]:
             self.openFile(fileName)
 
 
+    def WndProc(self, message):
+       if message.Value.Msg == CLIPBOARD_DRAW:
+           self.onPaste(None, None)
+       Form.WndProc(self, message)
+       
+       
     def initTabControl(self):
         self.tabControl = TabControl(
             Dock = DockStyle.Fill,
@@ -220,7 +238,7 @@ class MainForm(Form):
             return None
 
 
-    def getPictureBox(self, image, mode=PictureBoxSizeMode.StretchImage):
+    def getPictureBox(self, image, mode=PictureBoxSizeMode.AutoSize):
         keyWArgs = {'Image': image,
                     'SizeMode': mode}
         if mode == PictureBoxSizeMode.StretchImage:
