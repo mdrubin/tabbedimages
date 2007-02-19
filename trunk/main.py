@@ -394,21 +394,18 @@ class MainForm(Form):
 
     def onImageMode(self, _, __):
         selectedTab = self.tabControl.SelectedTab
-        if not selectedTab:
-            self.imageModeButton.Checked = False
-        else:
-            if len(selectedTab.Controls):
-                currentMode = selectedTab.Controls[0].sizeMode
-                image = selectedTab.Controls[0].image
-                selectedTab.Controls.RemoveAt(0)
-                if currentMode == PictureBoxSizeMode.AutoSize:
-                    mode = PictureBoxSizeMode.StretchImage
-                else:
-                    mode = PictureBoxSizeMode.AutoSize
+        if selectedTab is not None:
+            currentMode = selectedTab.Controls[0].sizeMode
+            image = selectedTab.Controls[0].image
+            selectedTab.Controls.RemoveAt(0)
+            if currentMode == PictureBoxSizeMode.AutoSize:
+                mode = PictureBoxSizeMode.StretchImage
+            else:
+                mode = PictureBoxSizeMode.AutoSize
 
-                panel = ScrollableImagePanel(self.getPictureBox(image, mode))
-                panel.KeyDown += self.onKeyDown
-                selectedTab.Controls.Add(panel)
+            panel = ScrollableImagePanel(self.getPictureBox(image, mode))
+            panel.KeyDown += self.onKeyDown
+            selectedTab.Controls.Add(panel)
 
 
     def updateToolbar(self):
