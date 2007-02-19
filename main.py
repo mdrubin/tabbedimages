@@ -180,11 +180,11 @@ class MainForm(Form):
 
 
     def initToolBar(self):
-        toolBar = ToolStrip(
+        self.toolBar = ToolStrip(
             Dock = DockStyle.Top
         )
 
-        def addToolBarIcon(pickledIcon, name, clickHandler):
+        def addToolBarIcon(pickledIcon, name, clickHandler, checkOnClick=False):
             button = ToolStripButton()
             if pickledIcon:
                 button.Image = loads(pickledIcon)
@@ -193,16 +193,18 @@ class MainForm(Form):
             button.DisplayStyle = ToolStripItemDisplayStyle.Image
             if clickHandler:
                 button.Click += clickHandler
-            toolBar.Items.Add(button)
+            if checkOnClick:
+                button.CheckOnClick = True
+            self.toolBar.Items.Add(button)
 
         addToolBarIcon(OpenIcon, "Open", self.onOpen)
         addToolBarIcon(SaveIcon, "Save", self.onSave)
         addToolBarIcon(CloseIcon, "Close", self.onClose)
         addToolBarIcon(CopyIcon, "Copy", self.onCopy)
         addToolBarIcon(PasteIcon, "Paste", self.onPaste)
-        addToolBarIcon(ViewIcon, "Image mode", self.onImageMode)
+        addToolBarIcon(ViewIcon, "Image mode", self.onImageMode, True)
 
-        self.Controls.Add(toolBar)
+        self.Controls.Add(self.toolBar)
 
 
     def onKeyDown(self, _, event):
@@ -340,7 +342,10 @@ class MainForm(Form):
 
     def onImageMode(self, _, __):
         selectedTab = self.tabControl.SelectedTab
-        if selectedTab:
+        if not selectedTab:
+            # can't use negative indices on .NET collections
+            self.toolBar.Items[len(self.toolBar.Items) - 1].Checked = False
+        else:
             if len(selectedTab.Controls):
                 currentMode = selectedTab.Controls[0].sizeMode
                 image = selectedTab.Controls[0].image
