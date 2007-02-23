@@ -82,10 +82,20 @@ class ScrollableImagePanel(Panel):
         return False
 
 
+class DialogManager(object):
+        
+    def getOpenFileDialog(self, **kwargs):
+        return OpenFileDialog(**kwargs)
+        
+
 class MainForm(Form):
 
-    def __init__(self):
+    def __init__(self, openFileDialog=None):
         Form.__init__(self)
+        if openFileDialog:
+            self.openFileDialog = openFileDialog
+        else:
+            self.openFileDialog = OpenFileDialog()
         self.Text = 'Tabbed Image Viewer'
         self.Width = 350
         self.Height = 200
@@ -139,6 +149,7 @@ class MainForm(Form):
        
     def initTabControl(self):
         self.tabControl = TabControl(
+            Name = "TabControl",
             Dock = DockStyle.Fill,
             Alignment = TabAlignment.Bottom
         )
@@ -315,12 +326,11 @@ class MainForm(Form):
 
 
     def onOpen(self, _, __):
-        openFileDialog = OpenFileDialog(
-            Filter = FILTER,
-            Multiselect = True
-        )
-        if openFileDialog.ShowDialog() == DialogResult.OK:
-            for fileName in openFileDialog.FileNames:
+        self.openFileDialog.Filter = FILTER
+        self.openFileDialog.Multiselect = True
+
+        if self.openFileDialog.ShowDialog() == DialogResult.OK:
+            for fileName in self.openFileDialog.FileNames:
                 self.openFile(fileName)
         self.updateToolbar()
 
@@ -418,4 +428,5 @@ class MainForm(Form):
 
 
 Application.EnableVisualStyles()
-Application.Run(MainForm())
+if __name__ == "__main__":
+    Application.Run(MainForm())
