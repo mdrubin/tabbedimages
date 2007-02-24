@@ -18,13 +18,13 @@ from icons import (
 
 from cPickle import loads
 from System import ArgumentException
-from System.Drawing import Bitmap, Color, Icon
+from System.Drawing import Bitmap, Color, Icon, Point
 from System.Drawing.Imaging import ImageFormat
 from System.IO import Path
 from System.Windows.Forms import (
     Application, Clipboard, ControlStyles, ContextMenuStrip,
     DataObject, DialogResult, DockStyle, DragDropEffects,
-    Form, ImageList, Keys, MenuStrip,
+    Form, FormStartPosition, ImageList, Keys, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, Panel, PictureBox, PictureBoxSizeMode,
     SaveFileDialog, TabControl, TabAlignment,
@@ -97,8 +97,9 @@ class MainForm(Form):
         else:
             self.openFileDialog = OpenFileDialog()
         self.Text = 'Tabbed Image Viewer'
-        self.Width = 350
-        self.Height = 200
+        self.Width = 450
+        self.Height = 400
+        self.StartPosition = FormStartPosition.CenterScreen
         self.Icon = Icon(Path.Combine(IMAGEPATH, "pictures.ico"))
         self.AllowDrop = True
         self.justCopied = False
