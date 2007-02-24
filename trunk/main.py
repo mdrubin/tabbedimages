@@ -23,7 +23,7 @@ from System.Drawing.Imaging import ImageFormat
 from System.IO import Path
 from System.Windows.Forms import (
     Application, Clipboard, ControlStyles, ContextMenuStrip,
-    DataObject, DialogResult, DockStyle,
+    DataObject, DialogResult, DockStyle, DragDropEffects,
     Form, ImageList, Keys, MenuStrip,
     MessageBox, MessageBoxButtons, MessageBoxIcon,
     OpenFileDialog, Panel, PictureBox, PictureBoxSizeMode,
@@ -100,7 +100,7 @@ class MainForm(Form):
         self.Width = 350
         self.Height = 200
         self.Icon = Icon(Path.Combine(IMAGEPATH, "pictures.ico"))
-
+        self.AllowDrop = True
         self.justCopied = False
         self.paths = []
         
@@ -117,6 +117,8 @@ class MainForm(Form):
             self.openFile(fileName)
 
         self.updateToolbar()
+        
+        self.DragEnter += self.onDragEnter
 
 
     def WndProc(self, msg):
@@ -147,6 +149,12 @@ class MainForm(Form):
         Form.Dispose(self, disposing)
        
        
+    def onDragEnter(self, source, event):
+        if event.Data.ContainsFileDropList():
+            event.Effect = DragDropEffects.Copy
+        else:
+            event.Effect = DragDropEffects.None
+    
     def initTabControl(self):
         self.tabControl = TabControl(
             Name = "TabControl",
