@@ -49,6 +49,8 @@ class MockDataObject(object):
         if files: self.files = files
     def ContainsFileDropList(self):
         return self.containsFiles
+    def GetFileDropList(self):
+        return self.files
     
 class DragFilesTest(unittest.TestCase):
         
