@@ -1,11 +1,12 @@
 import clr
 clr.AddReference("System.Windows.Forms")
 from System.Threading import Thread
-from System.Windows.Forms import DialogResult, Form, OpenFileDialog
+from System.Windows.Forms import (DialogResult, DragDropEffects,
+    Form, OpenFileDialog)
 from main import MainForm
 import unittest
 
-class MainFormTest(unittest.TestCase):
+class OpenFilesTest(unittest.TestCase):
     
     def assertTabPages(self, form, expectedNumber):
         self.assertEquals(
@@ -35,6 +36,33 @@ class MainFormTest(unittest.TestCase):
         form = MainForm(openFileDialog)
         form.onOpen(None, None)
         self.assertTabPages(form, 2)
+
+
+       
+class Event(object):
+    def __init__(self, containsFiles):
+        self.Data = MockDataObject(containsFiles)
+        self.Effect = None
+class MockDataObject(object):
+    def __init__(self, containsFiles):
+        self.containsFiles = containsFiles
+    def ContainsFileDropList(self):
+        return self.containsFiles
+    
+class DragFilesTest(unittest.TestCase):
+        
+    def testDragNonFilesEffect(self):
+        form = MainForm()
+        assert form.AllowDrop
+        event = Event(containsFiles=False)
+        form.onDragEnter(None, event)
+        assert event.Effect == DragDropEffects.None        
+        
+    def testDragFilesEffect(self):
+        form = MainForm()
+        event = Event(containsFiles = True)
+        form.onDragEnter(None, event)
+        assert event.Effect == DragDropEffects.Copy
         
 
 class MockOpenFileDialog(object):
