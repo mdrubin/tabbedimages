@@ -6,27 +6,26 @@ from System.Windows.Forms import (DialogResult, DragDropEffects,
 from main import MainForm
 import unittest
 
+
+def assertTabPages(form, expectedNumber):
+    assert len(form.Controls["TabControl"].TabPages) == expectedNumber
+    
 class OpenFilesTest(unittest.TestCase):
     
-    def assertTabPages(self, form, expectedNumber):
-        self.assertEquals(
-            len(form.Controls["TabControl"].TabPages),
-            expectedNumber)
-        
     def testUsesRealOpenFileDialog(self):
         form = MainForm()
         self.assertTrue(isinstance(form.openFileDialog, OpenFileDialog))
         
     def testFreshFormHasEmptyTabControl(self):
         form = MainForm()
-        self.assertTabPages(form, 0)
+        assertTabPages(form, 0)
         
     def testFreshFormOpensFilesCancelledHasEmptyTabControl(self):
         openFileDialog=MockOpenFileDialog(
             DialogResult = DialogResult.Cancel)
         form = MainForm(openFileDialog)
         form.onOpen(None, None)
-        self.assertTabPages(form, 0)
+        assertTabPages(form, 0)
         
     def testFreshFormOpensFiles(self):       
         openFileDialog=MockOpenFileDialog(
@@ -35,17 +34,19 @@ class OpenFilesTest(unittest.TestCase):
                          "images\\michael.jpg"])
         form = MainForm(openFileDialog)
         form.onOpen(None, None)
-        self.assertTabPages(form, 2)
+        assertTabPages(form, 2)
 
 
        
 class Event(object):
-    def __init__(self, containsFiles):
-        self.Data = MockDataObject(containsFiles)
+    def __init__(self, containsFiles, files=None):
+        self.Data = MockDataObject(containsFiles, files)
         self.Effect = None
+        
 class MockDataObject(object):
-    def __init__(self, containsFiles):
+    def __init__(self, containsFiles, files=None):
         self.containsFiles = containsFiles
+        if files: self.files = files
     def ContainsFileDropList(self):
         return self.containsFiles
     
@@ -64,7 +65,16 @@ class DragFilesTest(unittest.TestCase):
         form.onDragEnter(None, event)
         assert event.Effect == DragDropEffects.Copy
         
-
+    def testDragDropFiles(self):
+        form = MainForm()
+        fileNames = ["images\\andrzej.jpg", 
+                     "images\\michael.jpg"]
+        event = Event(containsFiles=True, files=fileNames)
+        form.onDragDrop(None, event)
+        assertTabPages(form, 2)
+        
+        
+        
 class MockOpenFileDialog(object):
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

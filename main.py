@@ -119,6 +119,7 @@ class MainForm(Form):
         self.updateToolbar()
         
         self.DragEnter += self.onDragEnter
+        self.DragDrop += self.onDragDrop
 
 
     def WndProc(self, msg):
@@ -154,6 +155,9 @@ class MainForm(Form):
             event.Effect = DragDropEffects.Copy
         else:
             event.Effect = DragDropEffects.None
+  
+    def onDragDrop(self, source, event):
+        self.openFiles(event.Data.GetFileDropList())
     
     def initTabControl(self):
         self.tabControl = TabControl(
@@ -336,12 +340,13 @@ class MainForm(Form):
     def onOpen(self, _, __):
         self.openFileDialog.Filter = FILTER
         self.openFileDialog.Multiselect = True
-
         if self.openFileDialog.ShowDialog() == DialogResult.OK:
-            for fileName in self.openFileDialog.FileNames:
-                self.openFile(fileName)
-        self.updateToolbar()
-
+            self.openFiles(self.openFileDialog.FileNames)
+    
+    def openFiles(self, files):
+        for fileName in files:
+            self.openFile(fileName)
+            self.updateToolbar()
 
     def openFile(self, fileName):
         image = self.getImage(fileName)
